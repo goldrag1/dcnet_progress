@@ -1,0 +1,35 @@
+{
+  "actions": [],
+  "autoname": "format:RUN-{####}",
+  "creation": "2026-04-12 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["definition", "title", "initiator", "column_break_1", "status", "started_at", "completed_at", "section_break_context", "context_json", "section_break_run_data", "run_data"],
+  "fields": [
+    {"fieldname": "definition", "fieldtype": "Link", "label": "Process Definition", "options": "Process Definition", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "title", "fieldtype": "Data", "label": "Title", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "initiator", "fieldtype": "Link", "label": "Initiator", "options": "User", "default": "__user", "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "Running\nCompleted\nCancelled\nRejected", "default": "Running", "in_list_view": 1, "in_standard_filter": 1},
+    {"fieldname": "started_at", "fieldtype": "Datetime", "label": "Started At", "read_only": 1},
+    {"fieldname": "completed_at", "fieldtype": "Datetime", "label": "Completed At", "read_only": 1},
+    {"fieldname": "section_break_context", "fieldtype": "Section Break", "label": "Context"},
+    {"fieldname": "context_json", "fieldtype": "JSON", "label": "Context Data"},
+    {"fieldname": "section_break_run_data", "fieldtype": "Section Break", "label": "Run Data"},
+    {"fieldname": "run_data", "fieldtype": "JSON", "label": "Run Data", "hidden": 1}
+  ],
+  "links": [],
+  "modified": "2026-04-12 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Run",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+    {"create": 1, "read": 1, "write": 1, "role": "All"}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}

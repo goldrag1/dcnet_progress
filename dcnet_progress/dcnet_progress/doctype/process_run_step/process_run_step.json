@@ -1,0 +1,35 @@
+{
+  "actions": [],
+  "autoname": "format:RUN-STEP-{####}",
+  "creation": "2026-04-12 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["run", "step_id", "step_type", "label", "column_break_1", "status", "assigned_to", "started_at", "completed_at", "section_break_form", "form_data"],
+  "fields": [
+    {"fieldname": "run", "fieldtype": "Link", "label": "Process Run", "options": "Process Run", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "step_id", "fieldtype": "Data", "label": "Step ID", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "step_type", "fieldtype": "Select", "label": "Step Type", "options": "Start\nTask\nApproval\nFork\nJoin\nEnd"},
+    {"fieldname": "label", "fieldtype": "Data", "label": "Label", "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "Pending\nActive\nCompleted\nRejected\nSkipped", "default": "Pending", "in_list_view": 1, "in_standard_filter": 1},
+    {"fieldname": "assigned_to", "fieldtype": "Link", "label": "Assigned To", "options": "User", "in_list_view": 1},
+    {"fieldname": "started_at", "fieldtype": "Datetime", "label": "Started At", "read_only": 1},
+    {"fieldname": "completed_at", "fieldtype": "Datetime", "label": "Completed At", "read_only": 1},
+    {"fieldname": "section_break_form", "fieldtype": "Section Break", "label": "Form Data"},
+    {"fieldname": "form_data", "fieldtype": "JSON", "label": "Form Data"}
+  ],
+  "links": [],
+  "modified": "2026-04-12 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Run Step",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "delete": 1, "read": 1, "write": 1, "role": "System Manager"},
+    {"read": 1, "write": 1, "role": "All"}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}

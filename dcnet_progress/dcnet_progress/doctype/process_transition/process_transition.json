@@ -1,0 +1,27 @@
+{
+  "actions": [],
+  "creation": "2026-04-12 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "istable": 1,
+  "field_order": ["transition_id", "from_step", "to_step", "trigger", "column_break_1", "condition_type", "condition_json", "label"],
+  "fields": [
+    {"fieldname": "transition_id", "fieldtype": "Data", "label": "Transition ID", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "from_step", "fieldtype": "Data", "label": "From Step", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "to_step", "fieldtype": "Data", "label": "To Step", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "trigger", "fieldtype": "Select", "label": "Trigger", "options": "On Complete\nOn Reject", "default": "On Complete", "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "condition_type", "fieldtype": "Select", "label": "Condition Type", "options": "Always\nField Condition", "default": "Always"},
+    {"fieldname": "condition_json", "fieldtype": "JSON", "label": "Condition JSON"},
+    {"fieldname": "label", "fieldtype": "Data", "label": "Label"}
+  ],
+  "links": [],
+  "modified": "2026-04-12 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Transition",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "modified",
+  "sort_order": "DESC"
+}

@@ -1,0 +1,31 @@
+{
+  "actions": [],
+  "autoname": "format:RUN-ACT-{####}",
+  "creation": "2026-04-12 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["run", "run_step", "actor", "action", "column_break_1", "timestamp", "comment", "data_snapshot"],
+  "fields": [
+    {"fieldname": "run", "fieldtype": "Link", "label": "Process Run", "options": "Process Run", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "run_step", "fieldtype": "Link", "label": "Run Step", "options": "Process Run Step", "in_list_view": 1},
+    {"fieldname": "actor", "fieldtype": "Link", "label": "Actor", "options": "User", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "action", "fieldtype": "Select", "label": "Action", "options": "Start\nComplete\nReject\nReassign\nComment\nWithdraw", "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "timestamp", "fieldtype": "Datetime", "label": "Timestamp", "read_only": 1},
+    {"fieldname": "comment", "fieldtype": "Text", "label": "Comment"},
+    {"fieldname": "data_snapshot", "fieldtype": "JSON", "label": "Data Snapshot"}
+  ],
+  "links": [],
+  "modified": "2026-04-12 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Run Activity",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "read": 1, "role": "System Manager"},
+    {"create": 1, "read": 1, "role": "All"}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC"
+}

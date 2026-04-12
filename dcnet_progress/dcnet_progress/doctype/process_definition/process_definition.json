@@ -1,0 +1,36 @@
+{
+  "actions": [],
+  "autoname": "format:PROC-{####}",
+  "creation": "2026-04-12 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["title", "description", "category", "column_break_1", "version", "status", "owner_user", "section_break_steps", "steps", "section_break_transitions", "transitions", "section_break_graph", "graph_data"],
+  "fields": [
+    {"fieldname": "title", "fieldtype": "Data", "label": "Title", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "description", "fieldtype": "Text Editor", "label": "Description"},
+    {"fieldname": "category", "fieldtype": "Link", "label": "Category", "options": "Process Category", "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "version", "fieldtype": "Int", "label": "Version", "default": "1", "read_only": 1, "in_list_view": 1},
+    {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "Draft\nPublished\nSuspended", "default": "Draft", "in_list_view": 1, "in_standard_filter": 1},
+    {"fieldname": "owner_user", "fieldtype": "Link", "label": "Owner", "options": "User", "default": "__user"},
+    {"fieldname": "section_break_steps", "fieldtype": "Section Break", "label": "Steps"},
+    {"fieldname": "steps", "fieldtype": "Table", "label": "Steps", "options": "Process Step"},
+    {"fieldname": "section_break_transitions", "fieldtype": "Section Break", "label": "Transitions"},
+    {"fieldname": "transitions", "fieldtype": "Table", "label": "Transitions", "options": "Process Transition"},
+    {"fieldname": "section_break_graph", "fieldtype": "Section Break", "label": "Graph Data"},
+    {"fieldname": "graph_data", "fieldtype": "JSON", "label": "Graph Data", "hidden": 1}
+  ],
+  "links": [],
+  "modified": "2026-04-12 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Definition",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}
