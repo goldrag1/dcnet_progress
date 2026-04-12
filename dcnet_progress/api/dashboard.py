@@ -15,13 +15,15 @@ def get_stats():
         as_dict=True,
     )
 
-    # Backlog by user (active steps per user)
+    # Backlog by definition (active steps per process definition)
     backlog = frappe.db.sql(
         """
-        SELECT assigned_to, COUNT(*) as count
-        FROM `tabProcess Run Step`
-        WHERE status = 'Active' AND assigned_to IS NOT NULL
-        GROUP BY assigned_to
+        SELECT pd.title as definition_title, COUNT(*) as count
+        FROM `tabProcess Run Step` prs
+        JOIN `tabProcess Run` pr ON pr.name = prs.run
+        JOIN `tabProcess Definition` pd ON pd.name = pr.definition
+        WHERE prs.status = 'Active'
+        GROUP BY pd.name, pd.title
         ORDER BY count DESC
         LIMIT 10
         """,
@@ -38,6 +40,18 @@ def get_stats():
         as_dict=True,
     )
 
+    # Recently completed runs (last 30 days)
+    recent_completed = frappe.db.sql(
+        """
+        SELECT name, title, completed_at
+        FROM `tabProcess Run`
+        WHERE status = 'Completed' AND completed_at IS NOT NULL
+        ORDER BY completed_at DESC
+        LIMIT 10
+        """,
+        as_dict=True,
+    )
+
     # Total counts
     total_runs = frappe.db.count("Process Run")
     total_definitions = frappe.db.count("Process Definition", {"status": "Published"})
@@ -50,4 +64,12 @@ def get_stats():
         "total_runs": total_runs,
         "total_definitions": total_definitions,
         "active_steps": active_steps,
+        "recent_completed": [
+            {
+                "name": r.name,
+                "title": r.title,
+                "completed_at": str(r.completed_at) if r.completed_at else None,
+            }
+            for r in recent_completed
+        ],
     }
