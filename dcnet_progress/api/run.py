@@ -205,6 +205,9 @@ def get_detail(run):
     def_title = frappe.db.get_value("Process Definition", run_doc.definition, "title") or ""
     steps = _get_run_steps(run)
 
+    # Build step_def lookup from snapshot for form_schema
+    step_defs = {s["step_id"]: s for s in snapshot.get("steps", [])}
+
     activities = frappe.get_all(
         "Process Run Activity",
         filters={"run": run},
@@ -232,6 +235,7 @@ def get_detail(run):
                 "label": s.label,
                 "status": s.status,
                 "assigned_to": s.assigned_to,
+                "form_schema": step_defs.get(s.step_id, {}).get("form_schema") or [],
                 "form_data": json.loads(s.form_data) if s.form_data else None,
                 "started_at": str(s.started_at) if s.started_at else None,
                 "completed_at": str(s.completed_at) if s.completed_at else None,

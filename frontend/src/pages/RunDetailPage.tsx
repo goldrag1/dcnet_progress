@@ -4,9 +4,13 @@ import {
   Alert,
   Button,
   Card,
+  DatePicker,
   Descriptions,
+  Form,
   Input,
+  InputNumber,
   Modal,
+  Select,
   Space,
   Spin,
   Steps,
@@ -24,10 +28,9 @@ import {
   CommentOutlined,
 } from "@ant-design/icons";
 import { getRunDetail, executeStep, type RunDetail } from "../api/client";
-import type { ProcessRunStep } from "../api/types";
+import type { ProcessRunStep, FormField } from "../api/types";
 
 const { Title, Text } = Typography;
-const { TextArea } = Input;
 
 const statusConfig: Record<string, { color: string; icon: React.ReactNode; label: string }> = {
   Pending: { color: "default", icon: <ClockCircleOutlined />, label: "Chờ xử lý" },
@@ -44,6 +47,50 @@ const runStatusColor: Record<string, string> = {
   Rejected: "red",
 };
 
+function renderFormField(field: FormField, value: unknown, onChange: (key: string, val: unknown) => void) {
+  switch (field.type) {
+    case "number":
+      return (
+        <InputNumber
+          style={{ width: "100%" }}
+          value={value as number}
+          onChange={(v) => onChange(field.key, v)}
+        />
+      );
+    case "date":
+      return (
+        <DatePicker
+          style={{ width: "100%" }}
+          onChange={(_, dateStr) => onChange(field.key, dateStr)}
+        />
+      );
+    case "select":
+      return (
+        <Select
+          style={{ width: "100%" }}
+          value={value as string}
+          onChange={(v) => onChange(field.key, v)}
+          options={(field.options ?? []).map((o) => ({ label: o, value: o }))}
+        />
+      );
+    case "textarea":
+      return (
+        <Input.TextArea
+          rows={3}
+          value={value as string}
+          onChange={(e) => onChange(field.key, e.target.value)}
+        />
+      );
+    default:
+      return (
+        <Input
+          value={value as string}
+          onChange={(e) => onChange(field.key, e.target.value)}
+        />
+      );
+  }
+}
+
 function StepActionModal({
   step,
   action,
@@ -58,15 +105,34 @@ function StepActionModal({
   onDone: () => void;
 }) {
   const [comment, setComment] = useState("");
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
+  const schema: FormField[] = step.form_schema ?? [];
   const labels: Record<string, string> = { Complete: "Hoàn thành", Reject: "Từ chối", Comment: "Bình luận" };
 
+  const setField = (key: string, val: unknown) => {
+    setFormData((prev) => ({ ...prev, [key]: val }));
+  };
+
   const handleOk = async () => {
+    // Validate required fields
+    for (const field of schema) {
+      if (field.required && !formData[field.key]) {
+        messageApi.warning(`Vui lòng điền "${field.label}"`);
+        return;
+      }
+    }
     setLoading(true);
     try {
-      await executeStep({ run: step.run, step: step.name, action, comment });
+      await executeStep({
+        run: step.run,
+        step: step.name,
+        action,
+        comment,
+        form_data: Object.keys(formData).length > 0 ? formData : undefined,
+      });
       onDone();
     } catch {
       messageApi.error("Xử lý thất bại — vui lòng thử lại");
@@ -86,8 +152,21 @@ function StepActionModal({
         okText={labels[action]}
         okButtonProps={{ danger: action === "Reject", loading }}
       >
-        <TextArea
-          rows={4}
+        {schema.length > 0 && (
+          <Form layout="vertical" style={{ marginBottom: 12 }}>
+            {schema.map((field) => (
+              <Form.Item
+                key={field.key}
+                label={field.label}
+                required={field.required}
+              >
+                {renderFormField(field, formData[field.key], setField)}
+              </Form.Item>
+            ))}
+          </Form>
+        )}
+        <Input.TextArea
+          rows={3}
           placeholder="Ghi chú (tuỳ chọn)"
           value={comment}
           onChange={(e) => setComment(e.target.value)}

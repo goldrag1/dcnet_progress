@@ -1,5 +1,13 @@
 // TypeScript interfaces matching actual DocType fields in dcnet_progress
 
+export interface FormField {
+  key: string;
+  label: string;
+  type: "text" | "number" | "date" | "select" | "textarea";
+  required?: boolean;
+  options?: string[]; // for select type
+}
+
 export interface ProcessStep {
   step_id: string;
   step_type: "Start" | "Task" | "Approval" | "Fork" | "Join" | "End";
@@ -56,7 +64,8 @@ export interface ProcessRunStep {
   assigned_to?: string;
   started_at?: string;
   completed_at?: string;
-  form_data?: string; // JSON
+  form_schema?: FormField[];
+  form_data?: Record<string, unknown> | null;
 }
 
 export interface ProcessRunActivity {
