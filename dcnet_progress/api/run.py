@@ -336,7 +336,7 @@ def get_my_tasks(page=1, page_size=20):
 
 
 @frappe.whitelist()
-def get_list(page=1, page_size=20, status=None):
+def get_list(page=1, page_size=20, status=None, is_draft=None):
     """List process runs with pagination."""
     page = int(page)
     page_size = int(page_size)
@@ -344,6 +344,8 @@ def get_list(page=1, page_size=20, status=None):
     filters = {}
     if status:
         filters["status"] = status
+    if is_draft is not None:
+        filters["is_draft"] = int(is_draft)
     runs = frappe.get_all(
         "Process Run", filters=filters,
         fields=["name", "title", "definition", "initiator", "status", "started_at", "completed_at"],
