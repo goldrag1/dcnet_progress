@@ -102,7 +102,7 @@ def start(definition, title=None, initial_data=None):
 
 
 @frappe.whitelist(methods=["POST"])
-def execute_step(run, step, action, data=None, comment=None, step_id=None):
+def execute_step(run, step, action, form_data=None, comment=None, step_id=None):
     """Execute an action on an active step.
 
     step: Process Run Step doc name (e.g. "PRST-0001")
@@ -128,15 +128,15 @@ def execute_step(run, step, action, data=None, comment=None, step_id=None):
     if step_doc.status != "Active" and action not in ("Comment",):
         frappe.throw("Bước này không ở trạng thái hoạt động")
 
-    if data and isinstance(data, str):
-        data = json.loads(data)
+    if form_data and isinstance(form_data, str):
+        form_data = json.loads(form_data)
 
     # Normalize "Complete"/"Approve" → complete path
     if action in ("Complete", "Approve", "Forward", "Return"):
         step_doc.status = "Completed"
         step_doc.completed_at = now_datetime()
-        if data:
-            step_doc.form_data = json.dumps(data)
+        if form_data:
+            step_doc.form_data = json.dumps(form_data)
         step_doc.save(ignore_permissions=True)
 
         _log_activity(run, step_doc.name, "Complete", comment or "")
@@ -147,8 +147,8 @@ def execute_step(run, step, action, data=None, comment=None, step_id=None):
     elif action == "Reject":
         step_doc.status = "Rejected"
         step_doc.completed_at = now_datetime()
-        if data:
-            step_doc.form_data = json.dumps(data)
+        if form_data:
+            step_doc.form_data = json.dumps(form_data)
         step_doc.save(ignore_permissions=True)
 
         _log_activity(run, step_doc.name, "Reject", comment or "")
