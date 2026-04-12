@@ -1,75 +1,115 @@
 # apps/dcnet_progress/dcnet_progress/api/dashboard.py
+import json
+
 import frappe
 
 
 @frappe.whitelist()
 def get_stats():
-    """Dashboard statistics: runs by status, backlog by user, avg completion time."""
-    # Runs by status
-    status_counts = frappe.db.sql(
-        """
-        SELECT status, COUNT(*) as count
-        FROM `tabProcess Run`
-        GROUP BY status
-        """,
-        as_dict=True,
-    )
+    """Dashboard overview: 5 stat cards + backlog data."""
+    total = frappe.db.count("Process Run")
+    running = frappe.db.count("Process Run", {"status": "Running"})
+    completed = frappe.db.count("Process Run", {"status": "Completed"})
+    cancelled = frappe.db.count("Process Run", {"status": "Cancelled"})
+    draft = frappe.db.count("Process Run", {"status": "Draft"})
 
-    # Backlog by definition (active steps per process definition)
-    backlog = frappe.db.sql(
-        """
-        SELECT pd.title as definition_title, COUNT(*) as count
-        FROM `tabProcess Run Step` prs
-        JOIN `tabProcess Run` pr ON pr.name = prs.run
-        JOIN `tabProcess Definition` pd ON pd.name = pr.definition
-        WHERE prs.status = 'Active'
-        GROUP BY pd.name, pd.title
+    # Backlog by department (via Employee → department of assigned_to)
+    backlog_dept = frappe.db.sql("""
+        SELECT IFNULL(e.department, 'Không xác định') as department, COUNT(*) as count
+        FROM `tabProcess Run Step` s
+        LEFT JOIN `tabEmployee` e ON e.user_id = s.assigned_to AND e.status = 'Active'
+        WHERE s.status = 'Active'
+        GROUP BY e.department
         ORDER BY count DESC
         LIMIT 10
-        """,
-        as_dict=True,
-    )
+    """, as_dict=True)
 
-    # Avg completion time (in hours) for completed runs
-    avg_time = frappe.db.sql(
-        """
-        SELECT AVG(TIMESTAMPDIFF(HOUR, creation, completed_at)) as avg_hours
+    # Backlog by person
+    backlog_person = frappe.db.sql("""
+        SELECT s.assigned_to as user, COUNT(*) as count
+        FROM `tabProcess Run Step` s
+        WHERE s.status = 'Active' AND s.assigned_to IS NOT NULL
+        GROUP BY s.assigned_to
+        ORDER BY count DESC
+        LIMIT 20
+    """, as_dict=True)
+
+    # Avg completion time
+    avg_time = frappe.db.sql("""
+        SELECT AVG(TIMESTAMPDIFF(HOUR, started_at, completed_at)) as avg_hours
         FROM `tabProcess Run`
-        WHERE status = 'Completed' AND completed_at IS NOT NULL
-        """,
-        as_dict=True,
-    )
-
-    # Recently completed runs (last 30 days)
-    recent_completed = frappe.db.sql(
-        """
-        SELECT name, title, completed_at
-        FROM `tabProcess Run`
-        WHERE status = 'Completed' AND completed_at IS NOT NULL
-        ORDER BY completed_at DESC
-        LIMIT 10
-        """,
-        as_dict=True,
-    )
-
-    # Total counts
-    total_runs = frappe.db.count("Process Run")
-    total_definitions = frappe.db.count("Process Definition", {"status": "Published"})
-    active_steps = frappe.db.count("Process Run Step", {"status": "Active"})
+        WHERE status = 'Completed' AND completed_at IS NOT NULL AND started_at IS NOT NULL
+    """, as_dict=True)
 
     return {
-        "status_counts": status_counts,
-        "backlog": backlog,
+        "stat_cards": {
+            "total": total,
+            "running": running,
+            "completed": completed,
+            "cancelled": cancelled,
+            "draft": draft,
+        },
+        "backlog_department": backlog_dept,
+        "backlog_person": backlog_person,
         "avg_completion_hours": avg_time[0].get("avg_hours") if avg_time else 0,
-        "total_runs": total_runs,
-        "total_definitions": total_definitions,
-        "active_steps": active_steps,
-        "recent_completed": [
-            {
-                "name": r.name,
-                "title": r.title,
-                "completed_at": str(r.completed_at) if r.completed_at else None,
-            }
-            for r in recent_completed
-        ],
     }
+
+
+@frappe.whitelist()
+def get_detail_report(definition=None, status=None, page=1, page_size=50):
+    """Filtered detail report for runs."""
+    page = int(page)
+    page_size = int(page_size)
+    start = (page - 1) * page_size
+
+    filters = {}
+    if definition:
+        filters["definition"] = definition
+    if status:
+        filters["status"] = status
+
+    runs = frappe.get_all(
+        "Process Run",
+        filters=filters,
+        fields=["name", "title", "definition", "initiator", "status", "started_at", "completed_at"],
+        order_by="started_at desc",
+        start=start,
+        page_length=page_size,
+    )
+    for r in runs:
+        r["definition_title"] = frappe.db.get_value("Process Definition", r["definition"], "title") or ""
+
+    total = frappe.db.count("Process Run", filters)
+    return {"data": runs, "total": total, "page": page, "page_size": page_size}
+
+
+@frappe.whitelist()
+def export_excel(definition=None, status=None):
+    """Export runs to Excel (CSV for simplicity)."""
+    filters = {}
+    if definition:
+        filters["definition"] = definition
+    if status:
+        filters["status"] = status
+
+    runs = frappe.get_all(
+        "Process Run",
+        filters=filters,
+        fields=["name", "title", "definition", "initiator", "status", "started_at", "completed_at"],
+        order_by="started_at desc",
+        limit=5000,
+    )
+
+    import csv
+    import io
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Mã", "Tiêu đề", "Quy trình", "Người tạo", "Trạng thái", "Bắt đầu", "Hoàn thành"])
+    for r in runs:
+        def_title = frappe.db.get_value("Process Definition", r["definition"], "title") or ""
+        writer.writerow([r.name, r.title, def_title, r.initiator, r.status, r.started_at, r.completed_at])
+
+    frappe.response["filename"] = "bao-cao-quy-trinh.csv"
+    frappe.response["filecontent"] = output.getvalue()
+    frappe.response["type"] = "download"
