@@ -229,16 +229,16 @@ def get_my_tasks(page=1, page_size=20):
     page_size = int(page_size)
     start = (page - 1) * page_size
 
-    steps = frappe.get_all(
-        "Process Run Step",
-        filters={
-            "assigned_to": frappe.session.user,
-            "status": "Active",
-        },
-        fields=["name", "parent", "step_id", "assigned_to", "activated_at"],
-        order_by="activated_at desc",
-        start=start,
-        page_length=page_size,
+    steps = frappe.db.sql(
+        """
+        SELECT name, parent, step_id, assigned_to, activated_at
+        FROM `tabProcess Run Step`
+        WHERE assigned_to = %s AND status = 'Active'
+        ORDER BY activated_at DESC
+        LIMIT %s OFFSET %s
+        """,
+        (frappe.session.user, page_size, start),
+        as_dict=True,
     )
 
     # Enrich with run and definition info
