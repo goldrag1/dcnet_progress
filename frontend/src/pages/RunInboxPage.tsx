@@ -63,7 +63,16 @@ export default function RunInboxPage() {
     { key: "draft", label: "Nháp" },
     { key: "all", label: "Tất cả" },
     { type: "divider" as const },
-    ...savedFilters.map((f) => ({ key: `filter:${f.name}`, label: f.filter_name })),
+    ...(savedFilters.length > 0
+      ? [
+          {
+            key: "saved-filters-group",
+            label: "Bộ lọc tự tạo",
+            type: "group" as const,
+            children: savedFilters.map((f) => ({ key: `filter:${f.name}`, label: f.filter_name })),
+          },
+        ]
+      : []),
   ];
 
   function renderContent() {
