@@ -1,0 +1,29 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-04-12 12:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["user", "filter_name", "column_break_1", "share_scope", "filter_json"],
+  "fields": [
+    {"fieldname": "user", "fieldtype": "Link", "label": "User", "options": "User", "reqd": 1, "in_list_view": 1, "default": "__user"},
+    {"fieldname": "filter_name", "fieldtype": "Data", "label": "Filter Name", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "share_scope", "fieldtype": "Select", "label": "Share Scope", "options": "Private\nDepartment\nAll", "default": "Private", "in_list_view": 1},
+    {"fieldname": "filter_json", "fieldtype": "JSON", "label": "Filter JSON", "reqd": 1}
+  ],
+  "links": [],
+  "modified": "2026-04-12 12:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Saved Filter",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "delete": 1, "read": 1, "write": 1, "role": "System Manager"},
+    {"create": 1, "delete": 1, "read": 1, "write": 1, "role": "All"}
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "track_changes": 0
+}

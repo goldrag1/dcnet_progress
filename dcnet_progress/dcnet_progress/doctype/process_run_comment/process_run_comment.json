@@ -1,0 +1,31 @@
+{
+  "actions": [],
+  "autoname": "format:COMMENT-{####}",
+  "creation": "2026-04-12 12:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["run", "step_id", "column_break_1", "user", "content", "mentions", "attachments"],
+  "fields": [
+    {"fieldname": "run", "fieldtype": "Link", "label": "Process Run", "options": "Process Run", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "step_id", "fieldtype": "Data", "label": "Step ID"},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "user", "fieldtype": "Link", "label": "User", "options": "User", "reqd": 1, "default": "__user", "in_list_view": 1},
+    {"fieldname": "content", "fieldtype": "Text", "label": "Content", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "mentions", "fieldtype": "JSON", "label": "Mentions"},
+    {"fieldname": "attachments", "fieldtype": "JSON", "label": "Attachments"}
+  ],
+  "links": [],
+  "modified": "2026-04-12 12:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "DCNet Progress",
+  "name": "Process Run Comment",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {"create": 1, "delete": 1, "read": 1, "write": 1, "role": "System Manager"},
+    {"create": 1, "read": 1, "write": 1, "role": "All"}
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "track_changes": 0
+}
