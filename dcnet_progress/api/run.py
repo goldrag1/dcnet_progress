@@ -4,11 +4,19 @@ import json
 import frappe
 from frappe.utils import now_datetime
 
-from dcnet_progress.engine import activate_step, advance_run, handle_reject, resolve_executor
+from dcnet_progress.engine import (
+    _get_run_step,
+    _get_run_steps,
+    _get_snapshot,
+    _log_activity,
+    activate_step,
+    advance_run,
+    handle_reject,
+)
 
 
 @frappe.whitelist(methods=["POST"])
-def start(definition, initial_data=None):
+def start(definition, title=None, initial_data=None):
     """Create a new process run from a published definition."""
     defn = frappe.get_doc("Process Definition", definition)
     if defn.status != "Published":
@@ -17,7 +25,7 @@ def start(definition, initial_data=None):
     if initial_data and isinstance(initial_data, str):
         initial_data = json.loads(initial_data)
 
-    # Build snapshot
+    # Build snapshot from current definition
     snapshot = {
         "steps": [
             {
@@ -49,40 +57,45 @@ def start(definition, initial_data=None):
     }
 
     run = frappe.new_doc("Process Run")
-    run.process_definition = defn.name
-    run.definition_version = defn.version
-    run.definition_snapshot = json.dumps(snapshot)
-    run.status = "In Progress"
-    run.initiated_by = frappe.session.user
-
-    # Create run steps for all steps (Pending)
-    for step_def in snapshot["steps"]:
-        run.append("run_steps", {
-            "step_id": step_def["step_id"],
-            "status": "Pending",
-        })
-
-    # Find Start node and auto-complete it
-    start_step = None
-    for step_def in snapshot["steps"]:
-        if step_def["step_type"] == "Start":
-            start_step = step_def
-            break
-
-    if start_step:
-        for rs in run.run_steps:
-            if rs.step_id == start_step["step_id"]:
-                rs.status = "Completed"
-                rs.completed_at = now_datetime()
-                rs.assigned_to = frappe.session.user
-                if initial_data:
-                    rs.form_data = json.dumps(initial_data)
-                break
-
+    run.definition = defn.name
+    run.title = title or defn.title
+    run.initiator = frappe.session.user
+    run.status = "Running"
+    run.started_at = now_datetime()
+    run.run_data = json.dumps(snapshot)
     run.insert(ignore_permissions=True)
     frappe.db.commit()
 
-    # Advance from Start to activate next steps
+    # Create Pending steps for every step in the definition
+    for step_def in snapshot["steps"]:
+        step_doc = frappe.new_doc("Process Run Step")
+        step_doc.run = run.name
+        step_doc.step_id = step_def["step_id"]
+        step_doc.step_type = step_def["step_type"]
+        step_doc.label = step_def.get("label", "")
+        step_doc.status = "Pending"
+        step_doc.insert(ignore_permissions=True)
+
+    # Find Start node and mark it Completed so advance_run can proceed
+    start_def = next((s for s in snapshot["steps"] if s["step_type"] == "Start"), None)
+    if start_def:
+        rows = frappe.get_all(
+            "Process Run Step",
+            filters={"run": run.name, "step_id": start_def["step_id"]},
+            fields=["name"],
+        )
+        if rows:
+            step_doc = frappe.get_doc("Process Run Step", rows[0].name)
+            step_doc.status = "Completed"
+            step_doc.assigned_to = frappe.session.user
+            step_doc.completed_at = now_datetime()
+            if initial_data:
+                step_doc.form_data = json.dumps(initial_data)
+            step_doc.save(ignore_permissions=True)
+
+    frappe.db.commit()
+
+    # Advance from Start → activate next steps
     advance_run(run.name)
 
     return {"name": run.name, "status": run.status}
@@ -90,58 +103,52 @@ def start(definition, initial_data=None):
 
 @frappe.whitelist(methods=["POST"])
 def execute_step(run, step_id, action, data=None, comment=None):
-    """Execute an action on an active step."""
+    """Execute an action on an active step.
+
+    action: Approve | Reject | Forward | Return
+    """
     run_doc = frappe.get_doc("Process Run", run)
 
-    if run_doc.status != "In Progress":
+    if run_doc.status != "Running":
         frappe.throw("Lượt chạy không ở trạng thái đang thực hiện")
 
-    run_step = None
-    for rs in run_doc.run_steps:
-        if rs.step_id == step_id:
-            run_step = rs
-            break
-
+    run_step = _get_run_step(run, step_id)
     if not run_step:
         frappe.throw(f"Không tìm thấy bước {step_id}")
-
     if run_step.status != "Active":
         frappe.throw("Bước này không ở trạng thái hoạt động")
 
     if data and isinstance(data, str):
         data = json.loads(data)
 
+    step_doc = frappe.get_doc("Process Run Step", run_step.name)
+
     if action in ("Approve", "Forward", "Return"):
-        run_step.status = "Completed"
-        run_step.action = action
-        run_step.action_comment = comment or ""
-        run_step.completed_at = now_datetime()
+        step_doc.status = "Completed"
+        step_doc.completed_at = now_datetime()
         if data:
-            run_step.form_data = json.dumps(data)
+            step_doc.form_data = json.dumps(data)
+        step_doc.save(ignore_permissions=True)
 
-        from dcnet_progress.engine import _log_activity
-        _log_activity(run_doc, step_id, action.lower(), comment or "")
+        activity_action = {"Approve": "Complete", "Forward": "Complete", "Return": "Complete"}.get(action, "Complete")
+        _log_activity(run, run_step.name, activity_action, comment or "")
 
-        run_doc.save(ignore_permissions=True)
         frappe.db.commit()
-        advance_run(run_doc.name)
+        advance_run(run)
 
     elif action == "Reject":
-        run_step.status = "Rejected"
-        run_step.action = "Reject"
-        run_step.action_comment = comment or ""
-        run_step.completed_at = now_datetime()
+        step_doc.status = "Rejected"
+        step_doc.completed_at = now_datetime()
         if data:
-            run_step.form_data = json.dumps(data)
+            step_doc.form_data = json.dumps(data)
+        step_doc.save(ignore_permissions=True)
 
-        from dcnet_progress.engine import _log_activity
-        _log_activity(run_doc, step_id, "reject", comment or "")
+        _log_activity(run, run_step.name, "Reject", comment or "")
 
-        run_doc.save(ignore_permissions=True)
         frappe.db.commit()
-        handle_reject(run_doc.name, step_id)
+        handle_reject(run, step_id)
 
-    return {"name": run_doc.name, "status": frappe.db.get_value("Process Run", run_doc.name, "status")}
+    return {"name": run, "status": frappe.db.get_value("Process Run", run, "status")}
 
 
 @frappe.whitelist(methods=["POST"])
@@ -149,75 +156,85 @@ def withdraw(run):
     """Withdraw a run (initiator only)."""
     run_doc = frappe.get_doc("Process Run", run)
 
-    if run_doc.initiated_by != frappe.session.user:
+    if run_doc.initiator != frappe.session.user:
         frappe.throw("Chỉ người khởi tạo mới có thể thu hồi")
-
-    if run_doc.status != "In Progress":
+    if run_doc.status != "Running":
         frappe.throw("Chỉ có thể thu hồi lượt chạy đang thực hiện")
 
-    run_doc.status = "Withdrawn"
+    run_doc.status = "Cancelled"
     run_doc.save(ignore_permissions=True)
-    return {"name": run_doc.name, "status": "Withdrawn"}
+    _log_activity(run, None, "Withdraw", "Người khởi tạo thu hồi quy trình")
+    frappe.db.commit()
+    return {"name": run, "status": "Cancelled"}
 
 
 @frappe.whitelist(methods=["POST"])
 def reassign(run, step_id, new_user):
     """Reassign an active step to a different user."""
-    run_doc = frappe.get_doc("Process Run", run)
+    run_step = _get_run_step(run, step_id)
+    if not run_step or run_step.status != "Active":
+        frappe.throw("Không tìm thấy bước hoạt động để phân công lại")
 
-    for rs in run_doc.run_steps:
-        if rs.step_id == step_id and rs.status == "Active":
-            rs.assigned_to = new_user
-            from dcnet_progress.engine import _log_activity
-            _log_activity(run_doc, step_id, "reassign", f"Phân công lại cho {new_user}")
-            run_doc.save(ignore_permissions=True)
-            return {"name": run_doc.name, "assigned_to": new_user}
+    step_doc = frappe.get_doc("Process Run Step", run_step.name)
+    step_doc.assigned_to = new_user
+    step_doc.save(ignore_permissions=True)
 
-    frappe.throw("Không tìm thấy bước hoạt động để phân công lại")
+    _log_activity(run, run_step.name, "Reassign", f"Phân công lại cho {new_user}")
+    frappe.db.commit()
+    return {"name": run, "assigned_to": new_user}
 
 
 @frappe.whitelist()
 def get_detail(run):
     """Get full run detail with steps and activities."""
     run_doc = frappe.get_doc("Process Run", run)
-    snapshot = json.loads(run_doc.definition_snapshot) if isinstance(run_doc.definition_snapshot, str) else run_doc.definition_snapshot
+    snapshot = _get_snapshot(run_doc)
 
-    def_title = frappe.db.get_value("Process Definition", run_doc.process_definition, "title") or ""
+    def_title = frappe.db.get_value("Process Definition", run_doc.definition, "title") or ""
+    steps = _get_run_steps(run)
+
+    activities = frappe.get_all(
+        "Process Run Activity",
+        filters={"run": run},
+        fields=["name", "run_step", "actor", "action", "comment", "timestamp"],
+        order_by="timestamp asc",
+    )
 
     return {
         "name": run_doc.name,
-        "process_definition": run_doc.process_definition,
+        "definition": run_doc.definition,
         "definition_title": def_title,
-        "definition_version": run_doc.definition_version,
+        "title": run_doc.title,
         "status": run_doc.status,
-        "initiated_by": run_doc.initiated_by,
+        "initiator": run_doc.initiator,
+        "started_at": str(run_doc.started_at) if run_doc.started_at else None,
         "completed_at": str(run_doc.completed_at) if run_doc.completed_at else None,
         "created": str(run_doc.creation),
         "snapshot": snapshot,
         "run_steps": [
             {
+                "name": s.name,
                 "step_id": s.step_id,
+                "step_type": s.step_type,
+                "label": s.label,
                 "status": s.status,
                 "assigned_to": s.assigned_to,
                 "form_data": json.loads(s.form_data) if s.form_data else None,
-                "action": s.action,
-                "action_comment": s.action_comment,
-                "activated_at": str(s.activated_at) if s.activated_at else None,
+                "started_at": str(s.started_at) if s.started_at else None,
                 "completed_at": str(s.completed_at) if s.completed_at else None,
             }
-            for s in run_doc.run_steps
+            for s in steps
         ],
         "activities": [
             {
-                "step_id": a.step_id,
-                "user": a.user,
+                "name": a.name,
+                "run_step": a.run_step,
+                "actor": a.actor,
                 "action": a.action,
                 "comment": a.comment,
-                "from_status": a.from_status,
-                "to_status": a.to_status,
-                "created": str(a.creation),
+                "timestamp": str(a.timestamp) if a.timestamp else None,
             }
-            for a in run_doc.activities
+            for a in activities
         ],
     }
 
@@ -231,40 +248,31 @@ def get_my_tasks(page=1, page_size=20):
 
     steps = frappe.db.sql(
         """
-        SELECT name, parent, step_id, assigned_to, activated_at
-        FROM `tabProcess Run Step`
-        WHERE assigned_to = %s AND status = 'Active'
-        ORDER BY activated_at DESC
+        SELECT
+            s.name, s.run, s.step_id, s.label, s.assigned_to, s.started_at
+        FROM `tabProcess Run Step` s
+        WHERE s.assigned_to = %s AND s.status = 'Active'
+        ORDER BY s.started_at DESC
         LIMIT %s OFFSET %s
         """,
         (frappe.session.user, page_size, start),
         as_dict=True,
     )
 
-    # Enrich with run and definition info
     for step in steps:
         run_data = frappe.db.get_value(
             "Process Run",
-            step["parent"],
-            ["process_definition", "initiated_by", "status"],
+            step["run"],
+            ["definition", "initiator", "status", "title"],
             as_dict=True,
         )
         if run_data:
-            step["run_name"] = step["parent"]
-            step["process_definition"] = run_data["process_definition"]
+            step["definition"] = run_data["definition"]
             step["definition_title"] = frappe.db.get_value(
-                "Process Definition", run_data["process_definition"], "title"
+                "Process Definition", run_data["definition"], "title"
             ) or ""
-            step["initiated_by"] = run_data["initiated_by"]
-
-        # Get step label from snapshot
-        snapshot_json = frappe.db.get_value("Process Run", step["parent"], "definition_snapshot")
-        if snapshot_json:
-            snapshot = json.loads(snapshot_json) if isinstance(snapshot_json, str) else snapshot_json
-            for s_def in snapshot.get("steps", []):
-                if s_def["step_id"] == step["step_id"]:
-                    step["step_label"] = s_def.get("label", step["step_id"])
-                    break
+            step["initiator"] = run_data["initiator"]
+            step["run_title"] = run_data["title"]
 
     total = frappe.db.count(
         "Process Run Step",
@@ -272,3 +280,31 @@ def get_my_tasks(page=1, page_size=20):
     )
 
     return {"data": steps, "total": total, "page": page, "page_size": page_size}
+
+
+@frappe.whitelist()
+def get_list(page=1, page_size=20, status=None):
+    """List process runs with pagination."""
+    page = int(page)
+    page_size = int(page_size)
+    start = (page - 1) * page_size
+
+    filters = {}
+    if status:
+        filters["status"] = status
+
+    runs = frappe.get_all(
+        "Process Run",
+        filters=filters,
+        fields=["name", "title", "definition", "initiator", "status", "started_at", "completed_at"],
+        order_by="started_at desc",
+        start=start,
+        page_length=page_size,
+    )
+
+    # Enrich with definition title
+    for r in runs:
+        r["definition_title"] = frappe.db.get_value("Process Definition", r["definition"], "title") or ""
+
+    total = frappe.db.count("Process Run", filters)
+    return {"data": runs, "total": total, "page": page, "page_size": page_size}

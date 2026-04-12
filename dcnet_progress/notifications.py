@@ -7,7 +7,7 @@ def notify_step_activation(run, step_id, assigned_to, step_def):
     if not assigned_to:
         return
 
-    definition_title = frappe.db.get_value("Process Definition", run.process_definition, "title") or run.process_definition
+    definition_title = frappe.db.get_value("Process Definition", run.definition, "title") or run.definition
     step_label = step_def.get("label", step_id)
 
     # Create Notification Log (shows in Frappe Desk bell icon)
