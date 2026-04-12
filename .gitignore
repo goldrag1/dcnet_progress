@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+node_modules/
+dcnet_progress/public/frontend/
+!dcnet_progress/public/frontend/.gitkeep
+frontend/dist/
+.vite/

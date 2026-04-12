@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ app_name }}</title>
+  <script>
+    window.csrf_token = "{{ csrf_token }}";
+    window.boot = JSON.parse({{ boot }});
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <p>DCNet Progress — chờ build frontend...</p>
+</body>
+</html>
