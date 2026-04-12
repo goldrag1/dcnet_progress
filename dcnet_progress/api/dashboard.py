@@ -5,53 +5,48 @@ import frappe
 
 
 @frappe.whitelist()
-def get_stats():
-    """Dashboard overview: 5 stat cards + backlog data."""
-    total = frappe.db.count("Process Run")
-    running = frappe.db.count("Process Run", {"status": "Running"})
-    completed = frappe.db.count("Process Run", {"status": "Completed"})
-    cancelled = frappe.db.count("Process Run", {"status": "Cancelled"})
-    draft = frappe.db.count("Process Run", {"status": "Draft"})
+def get_stats(days=None):
+    """Dashboard stats matching frontend DashboardStats type.
 
-    # Backlog by department (via Employee → department of assigned_to)
-    backlog_dept = frappe.db.sql("""
-        SELECT IFNULL(e.department, 'Không xác định') as department, COUNT(*) as count
+    Returns:
+        status_counts: [{status, count}] for all statuses
+        backlog: [{definition_title, count}] — active steps by definition
+        recent_completed: [{name, title, completed_at}]
+    """
+    # Status counts
+    statuses = ["Running", "Completed", "Cancelled", "Rejected", "Draft"]
+    status_counts = [
+        {"status": s, "count": frappe.db.count("Process Run", {"status": s})}
+        for s in statuses
+    ]
+
+    # Backlog: active Process Run Steps grouped by definition title
+    backlog_rows = frappe.db.sql("""
+        SELECT
+            IFNULL(pd.title, s.run) AS definition_title,
+            COUNT(*) AS count
         FROM `tabProcess Run Step` s
-        LEFT JOIN `tabEmployee` e ON e.user_id = s.assigned_to AND e.status = 'Active'
+        LEFT JOIN `tabProcess Run` r ON r.name = s.run
+        LEFT JOIN `tabProcess Definition` pd ON pd.name = r.definition
         WHERE s.status = 'Active'
-        GROUP BY e.department
-        ORDER BY count DESC
-        LIMIT 10
-    """, as_dict=True)
-
-    # Backlog by person
-    backlog_person = frappe.db.sql("""
-        SELECT s.assigned_to as user, COUNT(*) as count
-        FROM `tabProcess Run Step` s
-        WHERE s.status = 'Active' AND s.assigned_to IS NOT NULL
-        GROUP BY s.assigned_to
+        GROUP BY r.definition
         ORDER BY count DESC
         LIMIT 20
     """, as_dict=True)
 
-    # Avg completion time
-    avg_time = frappe.db.sql("""
-        SELECT AVG(TIMESTAMPDIFF(HOUR, started_at, completed_at)) as avg_hours
-        FROM `tabProcess Run`
-        WHERE status = 'Completed' AND completed_at IS NOT NULL AND started_at IS NOT NULL
-    """, as_dict=True)
+    # Recent completed runs
+    recent = frappe.get_all(
+        "Process Run",
+        filters={"status": "Completed"},
+        fields=["name", "title", "completed_at"],
+        order_by="completed_at desc",
+        limit=10,
+    )
 
     return {
-        "stat_cards": {
-            "total": total,
-            "running": running,
-            "completed": completed,
-            "cancelled": cancelled,
-            "draft": draft,
-        },
-        "backlog_department": backlog_dept,
-        "backlog_person": backlog_person,
-        "avg_completion_hours": avg_time[0].get("avg_hours") if avg_time else 0,
+        "status_counts": status_counts,
+        "backlog": backlog_rows,
+        "recent_completed": recent,
     }
 
 
@@ -86,20 +81,41 @@ def get_detail_report(definition=None, status=None, page=1, page_size=50):
 @frappe.whitelist()
 def get_overview(days=None, definition=None):
     """Returns DashboardOverview matching frontend type."""
-    stats = get_stats()
-    sc = stats["stat_cards"]
-    # Enrich backlog_person with full_name
-    people = stats["backlog_person"]
-    for p in people:
+    statuses = ["Running", "Completed", "Cancelled", "Draft"]
+    counts = {s: frappe.db.count("Process Run", {"status": s}) for s in statuses}
+    total = frappe.db.count("Process Run")
+
+    # Backlog by department
+    backlog_dept = frappe.db.sql("""
+        SELECT IFNULL(e.department, 'Không xác định') AS department, COUNT(*) AS count
+        FROM `tabProcess Run Step` s
+        LEFT JOIN `tabEmployee` e ON e.user_id = s.assigned_to AND e.status = 'Active'
+        WHERE s.status = 'Active'
+        GROUP BY e.department
+        ORDER BY count DESC
+        LIMIT 10
+    """, as_dict=True)
+
+    # Backlog by person with full_name
+    backlog_person = frappe.db.sql("""
+        SELECT s.assigned_to AS user, COUNT(*) AS count
+        FROM `tabProcess Run Step` s
+        WHERE s.status = 'Active' AND s.assigned_to IS NOT NULL
+        GROUP BY s.assigned_to
+        ORDER BY count DESC
+        LIMIT 20
+    """, as_dict=True)
+    for p in backlog_person:
         p["full_name"] = frappe.db.get_value("User", p["user"], "full_name") or p["user"]
+
     return {
-        "total": sc["total"],
-        "running": sc["running"],
-        "completed": sc["completed"],
-        "cancelled": sc["cancelled"],
-        "draft": sc["draft"],
-        "backlog_by_dept": stats["backlog_department"],
-        "backlog_by_person": people,
+        "total": total,
+        "running": counts.get("Running", 0),
+        "completed": counts.get("Completed", 0),
+        "cancelled": counts.get("Cancelled", 0),
+        "draft": counts.get("Draft", 0),
+        "backlog_by_dept": backlog_dept,
+        "backlog_by_person": backlog_person,
     }
 
 
