@@ -38,6 +38,34 @@ def get_list(filters=None, page=1, page_size=20):
 def get(name):
     """Get a single process definition with steps and transitions."""
     doc = frappe.get_doc("Process Definition", name)
+    steps = [
+        {
+            "step_id": s.step_id,
+            "step_type": s.step_type,
+            "label": s.label,
+            "description": s.description,
+            "form_schema": s.form_schema or "",
+            "assigned_role": s.executor_value if s.executor_type == "Role" else "",
+            "allow_reassign": s.allow_reassign,
+            "allow_return": s.allow_return,
+            "allow_forward": s.allow_forward,
+            "position_x": s.position_x,
+            "position_y": s.position_y,
+        }
+        for s in doc.steps
+    ]
+    transitions = [
+        {
+            "transition_id": t.transition_id,
+            "from_step": t.from_step,
+            "to_step": t.to_step,
+            "trigger": t.trigger,
+            "condition_type": t.condition_type,
+            "condition_json": json.loads(t.condition_json) if t.condition_json else None,
+            "label": t.label,
+        }
+        for t in doc.transitions
+    ]
     return {
         "name": doc.name,
         "title": doc.title,
@@ -46,36 +74,11 @@ def get(name):
         "version": doc.version,
         "status": doc.status,
         "owner_user": doc.owner_user,
-        "graph_data": json.loads(doc.graph_data) if doc.graph_data else None,
-        "steps": [
-            {
-                "step_id": s.step_id,
-                "step_type": s.step_type,
-                "label": s.label,
-                "description": s.description,
-                "form_schema": json.loads(s.form_schema) if s.form_schema else [],
-                "executor_type": s.executor_type,
-                "executor_value": s.executor_value,
-                "allow_reassign": s.allow_reassign,
-                "allow_return": s.allow_return,
-                "allow_forward": s.allow_forward,
-                "position_x": s.position_x,
-                "position_y": s.position_y,
-            }
-            for s in doc.steps
-        ],
-        "transitions": [
-            {
-                "transition_id": t.transition_id,
-                "from_step": t.from_step,
-                "to_step": t.to_step,
-                "trigger": t.trigger,
-                "condition_type": t.condition_type,
-                "condition_json": json.loads(t.condition_json) if t.condition_json else None,
-                "label": t.label,
-            }
-            for t in doc.transitions
-        ],
+        "steps": steps,
+        "transitions": transitions,
+        # Frontend expects JSON strings for the designer canvas
+        "steps_json": json.dumps(steps),
+        "transitions_json": json.dumps(transitions),
     }
 
 
