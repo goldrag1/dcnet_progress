@@ -84,6 +84,32 @@ def get_detail_report(definition=None, status=None, page=1, page_size=50):
 
 
 @frappe.whitelist()
+def get_overview(days=None, definition=None):
+    """Returns DashboardOverview matching frontend type."""
+    stats = get_stats()
+    sc = stats["stat_cards"]
+    # Enrich backlog_person with full_name
+    people = stats["backlog_person"]
+    for p in people:
+        p["full_name"] = frappe.db.get_value("User", p["user"], "full_name") or p["user"]
+    return {
+        "total": sc["total"],
+        "running": sc["running"],
+        "completed": sc["completed"],
+        "cancelled": sc["cancelled"],
+        "draft": sc["draft"],
+        "backlog_by_dept": stats["backlog_department"],
+        "backlog_by_person": people,
+    }
+
+
+@frappe.whitelist()
+def export_csv(days=None):
+    """Trigger CSV download — delegates to export_excel."""
+    return export_excel()
+
+
+@frappe.whitelist()
 def export_excel(definition=None, status=None):
     """Export runs to Excel (CSV for simplicity)."""
     filters = {}
