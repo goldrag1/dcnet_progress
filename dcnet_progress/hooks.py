@@ -21,3 +21,13 @@ website_route_rules = [
 ]
 
 after_migrate = ["dcnet_progress.migrate.after_migrate"]
+
+has_permission = {
+    "Process Run": "dcnet_progress.permissions.has_process_run_permission",
+}
+
+scheduler_events = {
+    "hourly": [
+        "dcnet_progress.engine.check_deadlines",
+    ],
+}
