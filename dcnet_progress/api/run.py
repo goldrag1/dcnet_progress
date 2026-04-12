@@ -102,36 +102,44 @@ def start(definition, title=None, initial_data=None):
 
 
 @frappe.whitelist(methods=["POST"])
-def execute_step(run, step_id, action, data=None, comment=None):
+def execute_step(run, step, action, data=None, comment=None, step_id=None):
     """Execute an action on an active step.
 
-    action: Approve | Reject | Forward | Return
+    step: Process Run Step doc name (e.g. "PRST-0001")
+    action: Complete | Reject | Comment | Approve | Forward | Return
     """
     run_doc = frappe.get_doc("Process Run", run)
 
     if run_doc.status != "Running":
         frappe.throw("Lượt chạy không ở trạng thái đang thực hiện")
 
-    run_step = _get_run_step(run, step_id)
-    if not run_step:
-        frappe.throw(f"Không tìm thấy bước {step_id}")
-    if run_step.status != "Active":
+    # Resolve step: accept either doc name (step) or step_id UUID
+    if step:
+        step_doc = frappe.get_doc("Process Run Step", step)
+        if step_doc.run != run:
+            frappe.throw("Bước không thuộc lượt chạy này")
+        step_id = step_doc.step_id
+    else:
+        step_doc_name = _get_run_step(run, step_id)
+        if not step_doc_name:
+            frappe.throw(f"Không tìm thấy bước {step_id}")
+        step_doc = frappe.get_doc("Process Run Step", step_doc_name.name)
+
+    if step_doc.status != "Active" and action not in ("Comment",):
         frappe.throw("Bước này không ở trạng thái hoạt động")
 
     if data and isinstance(data, str):
         data = json.loads(data)
 
-    step_doc = frappe.get_doc("Process Run Step", run_step.name)
-
-    if action in ("Approve", "Forward", "Return"):
+    # Normalize "Complete"/"Approve" → complete path
+    if action in ("Complete", "Approve", "Forward", "Return"):
         step_doc.status = "Completed"
         step_doc.completed_at = now_datetime()
         if data:
             step_doc.form_data = json.dumps(data)
         step_doc.save(ignore_permissions=True)
 
-        activity_action = {"Approve": "Complete", "Forward": "Complete", "Return": "Complete"}.get(action, "Complete")
-        _log_activity(run, run_step.name, activity_action, comment or "")
+        _log_activity(run, step_doc.name, "Complete", comment or "")
 
         frappe.db.commit()
         advance_run(run)
@@ -143,12 +151,16 @@ def execute_step(run, step_id, action, data=None, comment=None):
             step_doc.form_data = json.dumps(data)
         step_doc.save(ignore_permissions=True)
 
-        _log_activity(run, run_step.name, "Reject", comment or "")
+        _log_activity(run, step_doc.name, "Reject", comment or "")
 
         frappe.db.commit()
         handle_reject(run, step_id)
 
-    return {"name": run, "status": frappe.db.get_value("Process Run", run, "status")}
+    elif action == "Comment":
+        _log_activity(run, step_doc.name, "Comment", comment or "")
+        frappe.db.commit()
+
+    return {"ok": True, "run": run, "status": frappe.db.get_value("Process Run", run, "status")}
 
 
 @frappe.whitelist(methods=["POST"])
@@ -201,19 +213,20 @@ def get_detail(run):
     )
 
     return {
-        "name": run_doc.name,
-        "definition": run_doc.definition,
-        "definition_title": def_title,
-        "title": run_doc.title,
-        "status": run_doc.status,
-        "initiator": run_doc.initiator,
-        "started_at": str(run_doc.started_at) if run_doc.started_at else None,
-        "completed_at": str(run_doc.completed_at) if run_doc.completed_at else None,
-        "created": str(run_doc.creation),
-        "snapshot": snapshot,
-        "run_steps": [
+        "run": {
+            "name": run_doc.name,
+            "definition": run_doc.definition,
+            "definition_title": def_title,
+            "title": run_doc.title,
+            "status": run_doc.status,
+            "initiator": run_doc.initiator,
+            "started_at": str(run_doc.started_at) if run_doc.started_at else None,
+            "completed_at": str(run_doc.completed_at) if run_doc.completed_at else None,
+        },
+        "steps": [
             {
                 "name": s.name,
+                "run": run_doc.name,
                 "step_id": s.step_id,
                 "step_type": s.step_type,
                 "label": s.label,
@@ -228,6 +241,7 @@ def get_detail(run):
         "activities": [
             {
                 "name": a.name,
+                "run": run_doc.name,
                 "run_step": a.run_step,
                 "actor": a.actor,
                 "action": a.action,
@@ -249,7 +263,7 @@ def get_my_tasks(page=1, page_size=20):
     steps = frappe.db.sql(
         """
         SELECT
-            s.name, s.run, s.step_id, s.label, s.assigned_to, s.started_at
+            s.name, s.run, s.step_id, s.label, s.step_type, s.assigned_to, s.started_at
         FROM `tabProcess Run Step` s
         WHERE s.assigned_to = %s AND s.status = 'Active'
         ORDER BY s.started_at DESC

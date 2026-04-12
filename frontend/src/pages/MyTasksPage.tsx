@@ -53,8 +53,8 @@ export default function MyTasksPage() {
     },
     {
       title: "Bước",
-      dataIndex: "step_label",
-      key: "step_label",
+      dataIndex: "label",
+      key: "label",
       render: (text: string, record: MyTask) => (
         <Space>
           <Tag color={STEP_TYPE_COLOR[record.step_type] ?? "default"}>{record.step_type}</Tag>
@@ -94,7 +94,7 @@ export default function MyTasksPage() {
         <Table
           dataSource={tasks}
           columns={columns}
-          rowKey="step_name"
+          rowKey="name"
           locale={{ emptyText: "Không có việc nào đang chờ xử lý" }}
           pagination={{
             current: page,

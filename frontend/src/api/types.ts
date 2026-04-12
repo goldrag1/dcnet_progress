@@ -73,8 +73,8 @@ export interface MyTask {
   run: string;
   run_title: string;
   definition_title: string;
-  step_name: string;
-  step_label: string;
+  name: string;
+  label: string;
   step_type: string;
   started_at?: string;
   form_schema?: string;

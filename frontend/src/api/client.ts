@@ -87,7 +87,7 @@ export interface RunDetail {
 import type { ProcessRunActivity } from "./types";
 
 export async function getRunDetail(name: string): Promise<RunDetail> {
-  return call("run.get_detail", { name });
+  return call("run.get_detail", { run: name });
 }
 
 export async function startRun(opts: {
