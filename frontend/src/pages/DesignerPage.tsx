@@ -100,13 +100,16 @@ export default function DesignerPage() {
   const [definitionName, setDefinitionName] = useState<string | undefined>(id === "new" ? undefined : id);
   const [status, setStatus] = useState<ProcessDefinition["status"]>("Draft");
 
-  // Steps state
-  const [steps, setSteps] = useState<ProcessStep[]>([]);
+  // Steps state — auto-init with Start step for new definitions
+  const initStep: ProcessStep = { step_id: "start_1", step_type: "Start", label: "Bắt đầu", step_order: 0 };
+  const [steps, setSteps] = useState<ProcessStep[]>(id === "new" ? [initStep] : []);
   const [transitions, setTransitions] = useState<ProcessTransition[]>([]);
   const [selectedStep, setSelectedStep] = useState<ProcessStep | null>(null);
 
   // ReactFlow state
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
+    id === "new" ? [{ id: "start_1", type: "Start", position: { x: 300, y: 100 }, data: { label: "Bắt đầu" } }] : []
+  );
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const onConnect = useCallback(
     (c: Connection) => setEdges((eds) => addEdge(c, eds)),

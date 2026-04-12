@@ -202,11 +202,11 @@ export async function saveFilter(opts: {
 }
 
 export async function getSavedFilters(definition?: string): Promise<ProcessSavedFilter[]> {
-  return call("run.get_saved_filters", { definition });
+  return call("run.get_filters", { definition });
 }
 
 export async function deleteSavedFilter(name: string): Promise<{ ok: boolean }> {
-  return call("run.delete_saved_filter", { name });
+  return call("run.delete_filter", { name });
 }
 
 // ----- Dashboard API -----

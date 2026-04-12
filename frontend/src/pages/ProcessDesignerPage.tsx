@@ -170,7 +170,11 @@ export default function ProcessDesignerPage() {
   const [definitionName, setDefinitionName] = useState<string | undefined>(id);
   const [status, setStatus] = useState<"Draft" | "Published" | "Suspended">("Draft");
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const initNodes: Node[] = (!id || id === "new") ? [{
+    id: "start_1", type: "Start", position: { x: 300, y: 100 },
+    data: { label: "Bắt đầu", step_type: "Start", assigned_role: "", form_schema: "" },
+  }] : [];
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
