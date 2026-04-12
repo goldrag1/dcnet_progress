@@ -80,48 +80,62 @@ def get(name):
 
 
 @frappe.whitelist(methods=["POST"])
-def save(data):
-    """Save a draft process definition (create or update)."""
-    if isinstance(data, str):
-        data = json.loads(data)
+def save(definition=None):
+    """Save a draft process definition (create or update).
+    Frontend sends: { name?, title, steps_json, transitions_json }
+    where steps_json / transitions_json are JSON strings.
+    """
+    if definition is None:
+        frappe.throw("Missing definition payload")
+    if isinstance(definition, str):
+        definition = json.loads(definition)
 
-    name = data.get("name")
+    name = definition.get("name")
 
-    if name:
+    if name and frappe.db.exists("Process Definition", name):
         doc = frappe.get_doc("Process Definition", name)
     else:
         doc = frappe.new_doc("Process Definition")
 
-    doc.title = data.get("title", "Quy trình mới")
-    doc.description = data.get("description", "")
-    doc.category = data.get("category", "")
-    doc.graph_data = json.dumps(data.get("graph_data", {}))
+    doc.title = definition.get("title") or "Quy trình mới"
+    doc.description = definition.get("description", "")
+
+    # Parse steps from JSON string (frontend format)
+    raw_steps = definition.get("steps_json") or "[]"
+    if isinstance(raw_steps, str):
+        raw_steps = json.loads(raw_steps)
+
+    # Parse transitions from JSON string (frontend format)
+    raw_transitions = definition.get("transitions_json") or "[]"
+    if isinstance(raw_transitions, str):
+        raw_transitions = json.loads(raw_transitions)
 
     # Clear and rebuild steps
     doc.steps = []
-    for step in data.get("steps", []):
+    for step in raw_steps:
+        assigned_role = step.get("assigned_role", "")
         doc.append("steps", {
-            "step_id": step["step_id"],
+            "step_id": step.get("step_id", frappe.generate_hash(length=8)),
             "step_type": step.get("step_type", "Task"),
             "label": step.get("label", ""),
             "description": step.get("description", ""),
-            "form_schema": json.dumps(step.get("form_schema", [])),
-            "executor_type": step.get("executor_type", ""),
-            "executor_value": step.get("executor_value", ""),
+            "form_schema": step.get("form_schema") or None,
+            "executor_type": "Role" if assigned_role else "",
+            "executor_value": assigned_role,
             "allow_reassign": step.get("allow_reassign", 0),
             "allow_return": step.get("allow_return", 0),
             "allow_forward": step.get("allow_forward", 0),
-            "position_x": step.get("position_x", 0),
-            "position_y": step.get("position_y", 0),
+            "position_x": float(step.get("position_x", 0)),
+            "position_y": float(step.get("position_y", 0)),
         })
 
     # Clear and rebuild transitions
     doc.transitions = []
-    for t in data.get("transitions", []):
+    for t in raw_transitions:
         doc.append("transitions", {
-            "transition_id": t["transition_id"],
-            "from_step": t["from_step"],
-            "to_step": t["to_step"],
+            "transition_id": (t.get("from_step", "") + "__" + t.get("to_step", ""))[:140],
+            "from_step": t.get("from_step", ""),
+            "to_step": t.get("to_step", ""),
             "trigger": t.get("trigger", "On Complete"),
             "condition_type": t.get("condition_type", "Always"),
             "condition_json": json.dumps(t.get("condition_json")) if t.get("condition_json") else None,
@@ -129,7 +143,15 @@ def save(data):
         })
 
     doc.save()
-    return {"name": doc.name, "status": doc.status}
+    # Return format expected by frontend ProcessDefinition type
+    return {
+        "name": doc.name,
+        "title": doc.title,
+        "status": doc.status,
+        "version": doc.version,
+        "steps_json": definition.get("steps_json", "[]"),
+        "transitions_json": definition.get("transitions_json", "[]"),
+    }
 
 
 @frappe.whitelist(methods=["POST"])

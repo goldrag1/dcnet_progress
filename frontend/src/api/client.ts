@@ -1,4 +1,6 @@
-// Thin wrapper around frappe.call() for dcnet_progress API endpoints
+// Thin wrapper using fetch() for dcnet_progress API endpoints
+// NOTE: This is a www/ SPA page — the `frappe` JS global is NOT available.
+// We use fetch() with the CSRF token injected by www/process.py.
 
 import type {
   ProcessDefinition,
@@ -9,19 +11,29 @@ import type {
   ApiListResponse,
 } from "./types";
 
-// frappe is loaded by the Frappe desk — available as a global
-declare const frappe: {
-  call: (opts: {
-    method: string;
-    args?: Record<string, unknown>;
-    callback?: (r: { message: unknown }) => void;
-  }) => Promise<{ message: unknown }>;
-  session?: { user?: string };
-};
+declare global {
+  interface Window {
+    csrf_token?: string;
+    boot?: Record<string, unknown>;
+  }
+}
 
 async function call<T>(method: string, args?: Record<string, unknown>): Promise<T> {
-  const res = await frappe.call({ method: `dcnet_progress.api.${method}`, args });
-  return res.message as T;
+  const res = await fetch(`/api/method/dcnet_progress.api.${method}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Frappe-CSRF-Token": window.csrf_token ?? "fetch",
+    },
+    credentials: "include",
+    body: JSON.stringify(args ?? {}),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  return data.message as T;
 }
 
 // ----- Definition API -----

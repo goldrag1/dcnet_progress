@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ app_name }}</title>
+  <title>DCNet | Quy trình</title>
   <script>
+    {% if boot %}
     window.csrf_token = "{{ csrf_token }}";
     window.boot = JSON.parse({{ boot }});
+    {% endif %}
   </script>
+  <script type="module" crossorigin src="/assets/dcnet_progress/frontend/assets/index-DsweDX9w.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/dcnet_progress/frontend/assets/index-B4ZYgnSO.css">
 </head>
 <body>
   <div id="root"></div>
-  <p>DCNet Progress — chờ build frontend...</p>
 </body>
 </html>
