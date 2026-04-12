@@ -14,7 +14,7 @@ def _get_run_steps(run_name):
     return frappe.get_all(
         "Process Run Step",
         filters={"run": run_name},
-        fields=["name", "step_id", "step_type", "status", "assigned_to", "started_at", "completed_at", "form_data"],
+        fields=["name", "step_id", "step_type", "label", "status", "assigned_to", "started_at", "completed_at", "form_data"],
     )
 
 
@@ -23,7 +23,7 @@ def _get_run_step(run_name, step_id):
     rows = frappe.get_all(
         "Process Run Step",
         filters={"run": run_name, "step_id": step_id},
-        fields=["name", "step_id", "step_type", "status", "assigned_to", "started_at", "completed_at", "form_data"],
+        fields=["name", "step_id", "step_type", "label", "status", "assigned_to", "started_at", "completed_at", "form_data"],
     )
     return rows[0] if rows else None
 
