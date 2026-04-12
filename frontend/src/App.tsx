@@ -4,6 +4,7 @@ import AppLayout from "./components/layout/AppLayout";
 import RunInboxPage from "./pages/RunInboxPage";
 import ProcessListPage from "./pages/ProcessListPage";
 import ProcessDesignerPage from "./pages/ProcessDesignerPage";
+import DesignerPage from "./pages/DesignerPage";
 import RunListPage from "./pages/RunListPage";
 import RunDetailPage from "./pages/RunDetailPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -19,10 +20,10 @@ function App() {
         {/* Lượt chạy tab */}
         <Route path="runs" element={<RunListPage />} />
         <Route path="runs/:id" element={<RunDetailPage />} />
-        {/* Thiết kế tab */}
+        {/* Thiết kế tab — new 3-panel designer */}
         <Route path="designer" element={<ProcessListPage />} />
-        <Route path="designer/new" element={<ProcessDesignerPage />} />
-        <Route path="designer/:id" element={<ProcessDesignerPage />} />
+        <Route path="designer/new" element={<DesignerPage />} />
+        <Route path="designer/:id" element={<DesignerPage />} />
         {/* Legacy routes for backward compat */}
         <Route path="definitions" element={<ProcessListPage />} />
         <Route path="definitions/new" element={<ProcessDesignerPage />} />

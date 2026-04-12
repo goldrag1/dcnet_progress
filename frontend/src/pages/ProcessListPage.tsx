@@ -107,7 +107,7 @@ export default function ProcessListPage() {
           <Button
             icon={<EditOutlined />}
             size="small"
-            onClick={() => navigate(`/definitions/${record.name}`)}
+            onClick={() => navigate(`/designer/${record.name}`)}
           >
             Sửa
           </Button>
