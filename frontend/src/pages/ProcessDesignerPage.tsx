@@ -248,6 +248,7 @@ export default function ProcessDesignerPage() {
         transitions_json: JSON.stringify(transitions),
       });
       setDefinitionName(saved.name);
+      setStatus(saved.status as "Draft" | "Published" | "Suspended");
       navigate(`/definitions/${saved.name}`, { replace: true });
       messageApi.success("Đã lưu nháp");
     } catch {
@@ -307,7 +308,7 @@ export default function ProcessDesignerPage() {
           >
             <Button icon={<PlusOutlined />}>Thêm bước</Button>
           </Dropdown>
-          <Button icon={<SaveOutlined />} onClick={handleSave} loading={saving} disabled={status === "Published"}>Lưu nháp</Button>
+          <Button icon={<SaveOutlined />} onClick={handleSave} loading={saving}>Lưu nháp</Button>
           <Button type="primary" icon={<CheckCircleOutlined />} onClick={handlePublish} loading={saving} disabled={status === "Published"}>Xuất bản</Button>
         </Space>
       </div>

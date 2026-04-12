@@ -145,6 +145,9 @@ def save(definition=None):
             "label": t.get("label", ""),
         })
 
+    # Re-draft a published definition when user saves edits
+    if doc.status == "Published":
+        doc.status = "Draft"
     doc.save()
     # Return format expected by frontend ProcessDefinition type
     return {
