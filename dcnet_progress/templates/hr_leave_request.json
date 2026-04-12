@@ -1,0 +1,20 @@
+{
+  "title": "Đơn xin nghỉ phép",
+  "category": "HR",
+  "description": "Quy trình xin nghỉ phép có phê duyệt từ quản lý trực tiếp",
+  "icon": "calendar",
+  "steps": [
+    {"step_id": "start", "step_type": "Start", "label": "Bắt đầu", "step_order": 1},
+    {"step_id": "fill_form", "step_type": "Task", "label": "Điền đơn nghỉ phép", "step_order": 2, "executor_type": "Initiator", "allow_return": 0},
+    {"step_id": "approve", "step_type": "Approval", "label": "Phê duyệt quản lý", "step_order": 3, "executor_type": "Direct Manager", "allow_return": 1, "allow_forward": 1},
+    {"step_id": "hr_confirm", "step_type": "Task", "label": "HR xác nhận", "step_order": 4, "executor_type": "Role", "executor_value": "HR Manager"},
+    {"step_id": "end", "step_type": "End", "label": "Kết thúc", "step_order": 5}
+  ],
+  "transitions": [
+    {"from_step": "start", "to_step": "fill_form", "action_trigger": "Send", "condition_type": "Always"},
+    {"from_step": "fill_form", "to_step": "approve", "action_trigger": "Send", "condition_type": "Always"},
+    {"from_step": "approve", "to_step": "hr_confirm", "action_trigger": "Approve", "condition_type": "Always"},
+    {"from_step": "approve", "to_step": "fill_form", "action_trigger": "Reject", "condition_type": "Always"},
+    {"from_step": "hr_confirm", "to_step": "end", "action_trigger": "Send", "condition_type": "Always"}
+  ]
+}

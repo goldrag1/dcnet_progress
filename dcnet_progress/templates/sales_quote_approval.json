@@ -1,0 +1,74 @@
+{
+  "title": "Phê duyệt báo giá",
+  "category": "Kinh doanh",
+  "description": "Quy trình duyệt báo giá trước khi gửi khách hàng",
+  "icon": "tag",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "prepare",
+      "step_type": "Task",
+      "label": "Chuẩn bị báo giá",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "approve",
+      "step_type": "Approval",
+      "label": "Trưởng kinh doanh duyệt",
+      "step_order": 3,
+      "executor_type": "Direct Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "send",
+      "step_type": "Task",
+      "label": "Gửi báo giá cho khách",
+      "step_order": 4,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 5
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "prepare",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "prepare",
+      "to_step": "approve",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "send",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "prepare",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "send",
+      "to_step": "end",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    }
+  ]
+}

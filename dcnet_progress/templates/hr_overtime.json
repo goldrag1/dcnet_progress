@@ -1,0 +1,61 @@
+{
+  "title": "Đăng ký làm thêm giờ",
+  "category": "HR",
+  "description": "Quy trình đăng ký và phê duyệt làm thêm giờ",
+  "icon": "clock",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "register",
+      "step_type": "Task",
+      "label": "Đăng ký làm thêm",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "approve",
+      "step_type": "Approval",
+      "label": "Quản lý phê duyệt",
+      "step_order": 3,
+      "executor_type": "Direct Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 4
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "register",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "register",
+      "to_step": "approve",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "end",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "register",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    }
+  ]
+}

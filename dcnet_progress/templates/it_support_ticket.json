@@ -1,0 +1,88 @@
+{
+  "title": "Yêu cầu hỗ trợ IT",
+  "category": "IT",
+  "description": "Quy trình tiếp nhận và xử lý yêu cầu hỗ trợ kỹ thuật",
+  "icon": "help-circle",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "submit",
+      "step_type": "Task",
+      "label": "Mô tả vấn đề",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "triage",
+      "step_type": "Task",
+      "label": "IT phân loại và tiếp nhận",
+      "step_order": 3,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "resolve",
+      "step_type": "Task",
+      "label": "Xử lý sự cố",
+      "step_order": 4,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "confirm",
+      "step_type": "Approval",
+      "label": "Người yêu cầu xác nhận",
+      "step_order": 5,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 6
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "submit",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "submit",
+      "to_step": "triage",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "triage",
+      "to_step": "resolve",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "resolve",
+      "to_step": "confirm",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "confirm",
+      "to_step": "end",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "confirm",
+      "to_step": "resolve",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    }
+  ]
+}

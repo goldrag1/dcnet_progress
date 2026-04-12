@@ -1,0 +1,55 @@
+{
+  "title": "Đăng ký sử dụng phòng họp",
+  "category": "Hành chính",
+  "description": "Quy trình đăng ký và xác nhận đặt phòng họp",
+  "icon": "video",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "book",
+      "step_type": "Task",
+      "label": "Đăng ký thông tin",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "confirm",
+      "step_type": "Task",
+      "label": "Hành chính xác nhận",
+      "step_order": 3,
+      "executor_type": "Role",
+      "executor_value": "HR Manager"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 4
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "book",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "book",
+      "to_step": "confirm",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "confirm",
+      "to_step": "end",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    }
+  ]
+}

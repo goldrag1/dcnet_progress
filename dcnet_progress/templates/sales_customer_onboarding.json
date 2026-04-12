@@ -1,0 +1,94 @@
+{
+  "title": "Khai thác khách hàng mới",
+  "category": "Kinh doanh",
+  "description": "Quy trình onboarding khách hàng mới từ ký hợp đồng đến kích hoạt dịch vụ",
+  "icon": "user-plus",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "collect_info",
+      "step_type": "Task",
+      "label": "Thu thập thông tin khách",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "prepare_contract",
+      "step_type": "Task",
+      "label": "Chuẩn bị hợp đồng",
+      "step_order": 3,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "sign_contract",
+      "step_type": "Task",
+      "label": "Ký hợp đồng",
+      "step_order": 4,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "activate",
+      "step_type": "Task",
+      "label": "Kích hoạt dịch vụ",
+      "step_order": 5,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "handover",
+      "step_type": "Task",
+      "label": "Bàn giao cho hỗ trợ",
+      "step_order": 6,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 7
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "collect_info",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "collect_info",
+      "to_step": "prepare_contract",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "prepare_contract",
+      "to_step": "sign_contract",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "sign_contract",
+      "to_step": "activate",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "activate",
+      "to_step": "handover",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "handover",
+      "to_step": "end",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    }
+  ]
+}

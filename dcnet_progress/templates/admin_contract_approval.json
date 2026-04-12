@@ -1,0 +1,96 @@
+{
+  "title": "Phê duyệt hợp đồng",
+  "category": "Hành chính",
+  "description": "Quy trình soạn thảo, kiểm tra pháp lý và ký kết hợp đồng",
+  "icon": "file-signature",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "draft",
+      "step_type": "Task",
+      "label": "Soạn thảo hợp đồng",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "legal_review",
+      "step_type": "Approval",
+      "label": "Pháp chế xem xét",
+      "step_order": 3,
+      "executor_type": "Role",
+      "executor_value": "Legal Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "sign",
+      "step_type": "Approval",
+      "label": "Giám đốc ký kết",
+      "step_order": 4,
+      "executor_type": "Role",
+      "executor_value": "System Manager",
+      "no_return": 1
+    },
+    {
+      "step_id": "archive",
+      "step_type": "Task",
+      "label": "Lưu trữ hồ sơ",
+      "step_order": 5,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 6
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "draft",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "draft",
+      "to_step": "legal_review",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "legal_review",
+      "to_step": "sign",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "legal_review",
+      "to_step": "draft",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "sign",
+      "to_step": "archive",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "sign",
+      "to_step": "legal_review",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "archive",
+      "to_step": "end",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    }
+  ]
+}

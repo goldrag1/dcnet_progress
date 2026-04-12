@@ -1,0 +1,61 @@
+{
+  "title": "Đề xuất đào tạo",
+  "category": "HR",
+  "description": "Quy trình đề xuất và phê duyệt tham gia khóa đào tạo",
+  "icon": "book",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "request",
+      "step_type": "Task",
+      "label": "Đề xuất đào tạo",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "approve",
+      "step_type": "Approval",
+      "label": "Quản lý phê duyệt",
+      "step_order": 3,
+      "executor_type": "Direct Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 4
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "request",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "request",
+      "to_step": "approve",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "end",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "approve",
+      "to_step": "request",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    }
+  ]
+}

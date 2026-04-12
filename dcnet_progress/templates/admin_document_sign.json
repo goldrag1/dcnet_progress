@@ -1,0 +1,94 @@
+{
+  "title": "Ký duyệt văn bản nội bộ",
+  "category": "Hành chính",
+  "description": "Quy trình phê duyệt và ký ban hành văn bản, thông báo nội bộ",
+  "icon": "pen-tool",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "draft",
+      "step_type": "Task",
+      "label": "Soạn thảo văn bản",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "review",
+      "step_type": "Task",
+      "label": "Trưởng phòng xem xét",
+      "step_order": 3,
+      "executor_type": "Direct Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "sign",
+      "step_type": "Approval",
+      "label": "Giám đốc ký ban hành",
+      "step_order": 4,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "distribute",
+      "step_type": "Task",
+      "label": "Phát hành và lưu trữ",
+      "step_order": 5,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 6
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "draft",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "draft",
+      "to_step": "review",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "review",
+      "to_step": "sign",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "review",
+      "to_step": "draft",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "sign",
+      "to_step": "distribute",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "sign",
+      "to_step": "review",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "distribute",
+      "to_step": "end",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    }
+  ]
+}

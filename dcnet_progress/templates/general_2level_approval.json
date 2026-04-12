@@ -1,0 +1,82 @@
+{
+  "title": "Phê duyệt 2 cấp",
+  "category": "Chung",
+  "description": "Mẫu quy trình phê duyệt 2 cấp: quản lý trực tiếp → cấp trên",
+  "icon": "git-branch",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "request",
+      "step_type": "Task",
+      "label": "Lập yêu cầu",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "level1",
+      "step_type": "Approval",
+      "label": "Cấp 1 phê duyệt",
+      "step_order": 3,
+      "executor_type": "Direct Manager",
+      "allow_return": 1
+    },
+    {
+      "step_id": "level2",
+      "step_type": "Approval",
+      "label": "Cấp 2 phê duyệt",
+      "step_order": 4,
+      "executor_type": "Role",
+      "executor_value": "System Manager",
+      "no_return": 1
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 5
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "request",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "request",
+      "to_step": "level1",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "level1",
+      "to_step": "level2",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "level1",
+      "to_step": "request",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "level2",
+      "to_step": "end",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "level2",
+      "to_step": "level1",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    }
+  ]
+}

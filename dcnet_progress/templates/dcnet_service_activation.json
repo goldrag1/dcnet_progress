@@ -1,0 +1,102 @@
+{
+  "title": "Kích hoạt dịch vụ mạng",
+  "category": "Dịch vụ",
+  "description": "Quy trình kỹ thuật kích hoạt dịch vụ internet / datacenter cho khách hàng DCNet",
+  "icon": "wifi",
+  "steps": [
+    {
+      "step_id": "start",
+      "step_type": "Start",
+      "label": "Bắt đầu",
+      "step_order": 1
+    },
+    {
+      "step_id": "check_order",
+      "step_type": "Task",
+      "label": "Kiểm tra đơn hàng",
+      "step_order": 2,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "site_survey",
+      "step_type": "Task",
+      "label": "Khảo sát thực địa",
+      "step_order": 3,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "install",
+      "step_type": "Task",
+      "label": "Lắp đặt thiết bị",
+      "step_order": 4,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "test",
+      "step_type": "Task",
+      "label": "Kiểm tra kết nối",
+      "step_order": 5,
+      "executor_type": "Role",
+      "executor_value": "System Manager"
+    },
+    {
+      "step_id": "customer_accept",
+      "step_type": "Approval",
+      "label": "Khách hàng nghiệm thu",
+      "step_order": 6,
+      "executor_type": "Initiator"
+    },
+    {
+      "step_id": "end",
+      "step_type": "End",
+      "label": "Kết thúc",
+      "step_order": 7
+    }
+  ],
+  "transitions": [
+    {
+      "from_step": "start",
+      "to_step": "check_order",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "check_order",
+      "to_step": "site_survey",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "site_survey",
+      "to_step": "install",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "install",
+      "to_step": "test",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "test",
+      "to_step": "customer_accept",
+      "action_trigger": "Send",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "customer_accept",
+      "to_step": "end",
+      "action_trigger": "Approve",
+      "condition_type": "Always"
+    },
+    {
+      "from_step": "customer_accept",
+      "to_step": "test",
+      "action_trigger": "Reject",
+      "condition_type": "Always"
+    }
+  ]
+}
