@@ -20,6 +20,7 @@ import { getDefinition, saveDefinition, publishDefinition, getTemplates } from "
 import type { ProcessStep, ProcessTransition, ProcessDefinition } from "../api/types";
 import TemplatePickerModal from "../components/designer/TemplatePickerModal";
 import BranchingModal from "../components/designer/BranchingModal";
+import FormBuilder, { addFieldToSchema } from "../components/designer/FormBuilder";
 
 const { Text } = Typography;
 
@@ -254,19 +255,19 @@ export default function DesignerPage() {
     }
   }
 
+  // FormBuilder expanded field index
+  const [formBuilderExpandedIdx, setFormBuilderExpandedIdx] = useState<number | null>(null);
+
   // Add field to form_schema of selected step
   function addFieldToForm(fieldType: string) {
     if (!selectedStep) { messageApi.info("Chọn một bước trước"); return; }
-    const existing: { key: string; label: string; type: string }[] = (() => {
-      try { return JSON.parse(selectedStep.form_schema ?? "[]"); } catch { return []; }
-    })();
-    const key = `field_${existing.length + 1}`;
-    const newField = { key, label: `Trường ${existing.length + 1}`, type: fieldType, required: false };
-    const updated = { ...selectedStep, form_schema: JSON.stringify([...existing, newField]) };
+    const { json, newIndex } = addFieldToSchema(selectedStep.form_schema, fieldType);
+    const updated = { ...selectedStep, form_schema: json };
     setSteps((prev) => prev.map((s) => s.step_id === selectedStep.step_id ? updated : s));
     setSelectedStep(updated);
-    configForm.setFieldValue("form_schema", updated.form_schema);
+    configForm.setFieldValue("form_schema", json);
     setActiveTab("bieuMau");
+    setFormBuilderExpandedIdx(newIndex);
   }
 
   if (loading) return <Spin style={{ margin: "80px auto", display: "block" }} />;
@@ -412,12 +413,9 @@ export default function DesignerPage() {
                               key: "bieuMau",
                               label: "Biểu mẫu",
                               children: (
-                                <div>
-                                  <Form.Item name="form_schema" label="Cấu hình trường (JSON)">
-                                    <Input.TextArea rows={8} placeholder='[{"key":"amount","label":"Số tiền","type":"number","required":true}]' />
-                                  </Form.Item>
-                                  <Text type="secondary" style={{ fontSize: 12 }}>Kéo trường từ palette bên phải để thêm vào biểu mẫu.</Text>
-                                </div>
+                                <Form.Item name="form_schema" noStyle>
+                                  <FormBuilder disabled={status === "Published"} />
+                                </Form.Item>
                               ),
                             },
                             {
