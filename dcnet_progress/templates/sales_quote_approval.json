@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Chuẩn bị báo giá",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"khach_hang\", \"label\": \"Tên khách hàng\", \"type\": \"text\", \"required\": true}, {\"key\": \"san_pham_dich_vu\", \"label\": \"Sản phẩm/Dịch vụ\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"gia_tri\", \"label\": \"Giá trị báo giá (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_han_hieu_luc\", \"label\": \"Thời hạn hiệu lực (ngày)\", \"type\": \"number\", \"required\": true}, {\"key\": \"dieu_kien_thanh_toan\", \"label\": \"Điều kiện thanh toán\", \"type\": \"select\", \"required\": true, \"options\": [\"Thanh toán trước\", \"Thanh toán sau 30 ngày\", \"Thanh toán sau 60 ngày\", \"Thanh toán theo đợt\"]}, {\"key\": \"chiet_khau\", \"label\": \"Chiết khấu (%)\", \"type\": \"number\", \"required\": false}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú đặc biệt\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "approve",
@@ -30,7 +31,8 @@
       "step_type": "Task",
       "label": "Gửi báo giá cho khách",
       "step_order": 4,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ngay_gui\", \"label\": \"Ngày gửi báo giá\", \"type\": \"date\", \"required\": true}, {\"key\": \"nguoi_nhan\", \"label\": \"Người nhận (phía khách)\", \"type\": \"text\", \"required\": true}, {\"key\": \"hinh_thuc_gui\", \"label\": \"Hình thức gửi\", \"type\": \"select\", \"required\": true, \"options\": [\"Email\", \"Trực tiếp\", \"Bưu điện\"]}]"
     },
     {
       "step_id": "end",

@@ -16,7 +16,8 @@
       "label": "Kế toán lập ủy nhiệm chi",
       "step_order": 2,
       "executor_type": "Role",
-      "executor_value": "Accounts Manager"
+      "executor_value": "Accounts Manager",
+      "form_schema": "[{\"key\": \"so_tien\", \"label\": \"Số tiền thanh toán (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"noi_dung\", \"label\": \"Nội dung thanh toán\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"phuong_thuc\", \"label\": \"Phương thức thanh toán\", \"type\": \"select\", \"required\": true, \"options\": [\"Chuyển khoản\", \"Tiền mặt\", \"Séc\"]}, {\"key\": \"tai_khoan_thu_huong\", \"label\": \"Tài khoản thụ hưởng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ten_thu_huong\", \"label\": \"Tên người thụ hưởng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngan_hang\", \"label\": \"Ngân hàng thụ hưởng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngay_thanh_toan\", \"label\": \"Ngày thanh toán dự kiến\", \"type\": \"date\", \"required\": true}, {\"key\": \"so_hoa_don\", \"label\": \"Số hóa đơn liên quan\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "approve",
@@ -33,7 +34,8 @@
       "label": "Thực hiện chuyển khoản",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "Accounts Manager"
+      "executor_value": "Accounts Manager",
+      "form_schema": "[{\"key\": \"ma_giao_dich\", \"label\": \"Mã giao dịch ngân hàng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngay_thuc_hien\", \"label\": \"Ngày thực hiện\", \"type\": \"date\", \"required\": true}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

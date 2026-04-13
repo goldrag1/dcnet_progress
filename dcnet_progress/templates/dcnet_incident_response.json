@@ -16,7 +16,8 @@
       "label": "Tiếp nhận sự cố",
       "step_order": 2,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"mo_ta_su_co\", \"label\": \"Mô tả sự cố\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"he_thong_anh_huong\", \"label\": \"Hệ thống bị ảnh hưởng\", \"type\": \"select\", \"required\": true, \"options\": [\"Core Network\", \"Access Network\", \"Datacenter\", \"DNS/DHCP\", \"Firewall\", \"Server\", \"Khác\"]}, {\"key\": \"muc_do\", \"label\": \"Mức độ nghiêm trọng\", \"type\": \"select\", \"required\": true, \"options\": [\"P1 - Nghiêm trọng\", \"P2 - Cao\", \"P3 - Trung bình\", \"P4 - Thấp\"]}, {\"key\": \"so_kh_anh_huong\", \"label\": \"Số khách hàng bị ảnh hưởng\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_gian_phat_hien\", \"label\": \"Thời gian phát hiện\", \"type\": \"text\", \"required\": true}]"
     },
     {
       "step_id": "diagnose",
@@ -24,7 +25,8 @@
       "label": "Chẩn đoán nguyên nhân",
       "step_order": 3,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"nguyen_nhan_so_bo\", \"label\": \"Nguyên nhân sơ bộ\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"pham_vi\", \"label\": \"Phạm vi ảnh hưởng chi tiết\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"du_kien_khac_phuc\", \"label\": \"Thời gian khắc phục dự kiến (giờ)\", \"type\": \"number\", \"required\": false}]"
     },
     {
       "step_id": "fix",
@@ -32,14 +34,16 @@
       "label": "Khắc phục sự cố",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"bien_phap\", \"label\": \"Biện pháp khắc phục\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"thoi_gian_khac_phuc\", \"label\": \"Thời gian khắc phục thực tế (phút)\", \"type\": \"number\", \"required\": true}, {\"key\": \"can_thay_the\", \"label\": \"Thiết bị cần thay thế\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "verify",
       "step_type": "Task",
       "label": "Xác nhận khắc phục xong",
       "step_order": 5,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"dich_vu_phuc_hoi\", \"label\": \"Dịch vụ đã phục hồi\", \"type\": \"checkbox\", \"required\": true}, {\"key\": \"ghi_chu_xac_nhan\", \"label\": \"Ghi chú xác nhận\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "report",
@@ -47,7 +51,8 @@
       "label": "Viết báo cáo sự cố",
       "step_order": 6,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"nguyen_nhan_goc\", \"label\": \"Nguyên nhân gốc (Root Cause)\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"bien_phap_phong_ngua\", \"label\": \"Biện pháp phòng ngừa\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"tong_thoi_gian_gian_doan\", \"label\": \"Tổng thời gian gián đoạn (phút)\", \"type\": \"number\", \"required\": true}, {\"key\": \"bai_hoc\", \"label\": \"Bài học kinh nghiệm\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Kê khai chi phí",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"noi_dung_chi\", \"label\": \"Nội dung chi phí\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"so_tien\", \"label\": \"Tổng số tiền (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"ngay_chi\", \"label\": \"Ngày phát sinh chi phí\", \"type\": \"date\", \"required\": true}, {\"key\": \"loai_chi_phi\", \"label\": \"Loại chi phí\", \"type\": \"select\", \"required\": true, \"options\": [\"Công tác phí\", \"Tiếp khách\", \"Đi lại\", \"Ăn uống\", \"Văn phòng phẩm\", \"Khác\"]}, {\"key\": \"co_chung_tu\", \"label\": \"Có chứng từ đính kèm\", \"type\": \"checkbox\", \"required\": false}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú thêm\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "approve_manager",
@@ -39,7 +40,8 @@
       "label": "Xuất tiền thanh toán",
       "step_order": 5,
       "executor_type": "Role",
-      "executor_value": "Accounts Manager"
+      "executor_value": "Accounts Manager",
+      "form_schema": "[{\"key\": \"hinh_thuc_chi\", \"label\": \"Hình thức chi\", \"type\": \"select\", \"required\": true, \"options\": [\"Chuyển khoản\", \"Tiền mặt\"]}, {\"key\": \"ngay_chi_tra\", \"label\": \"Ngày chi trả\", \"type\": \"date\", \"required\": true}, {\"key\": \"so_phieu_chi\", \"label\": \"Số phiếu chi\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "end",

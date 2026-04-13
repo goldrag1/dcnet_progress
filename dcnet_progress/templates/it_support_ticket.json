@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Mô tả vấn đề",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"loai_su_co\", \"label\": \"Loại sự cố\", \"type\": \"select\", \"required\": true, \"options\": [\"Máy tính\", \"Mạng/Internet\", \"Email\", \"Phần mềm\", \"Máy in\", \"Điện thoại\", \"Khác\"]}, {\"key\": \"mo_ta\", \"label\": \"Mô tả chi tiết vấn đề\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"muc_do\", \"label\": \"Mức độ ưu tiên\", \"type\": \"select\", \"required\": true, \"options\": [\"Thấp\", \"Trung bình\", \"Cao\", \"Khẩn cấp\"]}, {\"key\": \"anh_huong\", \"label\": \"Ảnh hưởng đến công việc\", \"type\": \"select\", \"required\": false, \"options\": [\"Không thể làm việc\", \"Làm việc chậm\", \"Ảnh hưởng nhẹ\", \"Không ảnh hưởng\"]}]"
     },
     {
       "step_id": "triage",
@@ -23,7 +24,8 @@
       "label": "IT phân loại và tiếp nhận",
       "step_order": 3,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"phan_loai_ky_thuat\", \"label\": \"Phân loại kỹ thuật\", \"type\": \"select\", \"required\": true, \"options\": [\"Phần cứng\", \"Phần mềm\", \"Mạng\", \"Bảo mật\", \"Tài khoản\", \"Khác\"]}, {\"key\": \"nguoi_xu_ly\", \"label\": \"Người xử lý chính\", \"type\": \"text\", \"required\": true}, {\"key\": \"thoi_gian_du_kien\", \"label\": \"Thời gian xử lý dự kiến (giờ)\", \"type\": \"number\", \"required\": false}]"
     },
     {
       "step_id": "resolve",
@@ -31,7 +33,8 @@
       "label": "Xử lý sự cố",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"giai_phap\", \"label\": \"Giải pháp đã thực hiện\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"thoi_gian_xu_ly\", \"label\": \"Thời gian xử lý thực tế (giờ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"can_theo_doi\", \"label\": \"Cần theo dõi thêm\", \"type\": \"checkbox\", \"required\": false}]"
     },
     {
       "step_id": "confirm",

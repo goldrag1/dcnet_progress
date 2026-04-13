@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Lập yêu cầu",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"tieu_de\", \"label\": \"Tiêu đề yêu cầu\", \"type\": \"text\", \"required\": true}, {\"key\": \"noi_dung\", \"label\": \"Nội dung chi tiết\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"so_tien\", \"label\": \"Số tiền liên quan (VNĐ)\", \"type\": \"number\", \"required\": false}, {\"key\": \"ngay_yeu_cau\", \"label\": \"Ngày yêu cầu\", \"type\": \"date\", \"required\": true}, {\"key\": \"loai_yeu_cau\", \"label\": \"Phân loại\", \"type\": \"select\", \"required\": false, \"options\": [\"Chi phí\", \"Nhân sự\", \"Hành chính\", \"Kinh doanh\", \"Khác\"]}]"
     },
     {
       "step_id": "level1",

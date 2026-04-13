@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Đề xuất tuyển dụng",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"vi_tri\", \"label\": \"Vị trí tuyển dụng\", \"type\": \"text\", \"required\": true}, {\"key\": \"phong_ban\", \"label\": \"Phòng ban\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_luong\", \"label\": \"Số lượng cần tuyển\", \"type\": \"number\", \"required\": true}, {\"key\": \"mo_ta\", \"label\": \"Mô tả công việc\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"yeu_cau\", \"label\": \"Yêu cầu ứng viên\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"muc_luong\", \"label\": \"Mức lương đề xuất (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_gian_can\", \"label\": \"Thời gian cần người\", \"type\": \"date\", \"required\": true}, {\"key\": \"ly_do\", \"label\": \"Lý do tuyển dụng\", \"type\": \"select\", \"required\": true, \"options\": [\"Thay thế nhân sự nghỉ\", \"Mở rộng quy mô\", \"Dự án mới\", \"Khác\"]}]"
     },
     {
       "step_id": "dept_approve",
@@ -31,7 +32,8 @@
       "label": "HR xem xét",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "HR Manager"
+      "executor_value": "HR Manager",
+      "form_schema": "[{\"key\": \"danh_gia_nhu_cau\", \"label\": \"Đánh giá nhu cầu\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"ngan_sach_phe_duyet\", \"label\": \"Ngân sách phê duyệt (VNĐ)\", \"type\": \"number\", \"required\": false}, {\"key\": \"kenh_tuyen_dung\", \"label\": \"Kênh tuyển dụng đề xuất\", \"type\": \"select\", \"required\": false, \"options\": [\"Website tuyển dụng\", \"Headhunter\", \"Nội bộ giới thiệu\", \"Mạng xã hội\", \"Khác\"]}, {\"key\": \"thoi_gian_du_kien\", \"label\": \"Thời gian tuyển dự kiến (ngày)\", \"type\": \"number\", \"required\": false}]"
     },
     {
       "step_id": "end",

@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Soạn thảo hợp đồng",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ten_hop_dong\", \"label\": \"Tên hợp đồng\", \"type\": \"text\", \"required\": true}, {\"key\": \"doi_tac\", \"label\": \"Đối tác/Bên ký kết\", \"type\": \"text\", \"required\": true}, {\"key\": \"gia_tri\", \"label\": \"Giá trị hợp đồng (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_han\", \"label\": \"Thời hạn hợp đồng\", \"type\": \"text\", \"required\": true}, {\"key\": \"loai_hop_dong\", \"label\": \"Loại hợp đồng\", \"type\": \"select\", \"required\": true, \"options\": [\"Mua bán\", \"Dịch vụ\", \"Thuê khoán\", \"Hợp tác\", \"Lao động\", \"Khác\"]}, {\"key\": \"ngay_hieu_luc\", \"label\": \"Ngày hiệu lực\", \"type\": \"date\", \"required\": true}, {\"key\": \"noi_dung_chinh\", \"label\": \"Nội dung chính\", \"type\": \"textarea\", \"required\": true}]"
     },
     {
       "step_id": "legal_review",
@@ -40,7 +41,8 @@
       "step_type": "Task",
       "label": "Lưu trữ hồ sơ",
       "step_order": 5,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"so_luu_tru\", \"label\": \"Số lưu trữ\", \"type\": \"text\", \"required\": true}, {\"key\": \"vi_tri_luu\", \"label\": \"Vị trí lưu trữ\", \"type\": \"text\", \"required\": false}, {\"key\": \"ngay_luu\", \"label\": \"Ngày lưu trữ\", \"type\": \"date\", \"required\": true}]"
     },
     {
       "step_id": "end",

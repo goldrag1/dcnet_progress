@@ -16,7 +16,8 @@
       "label": "Kiểm tra hóa đơn",
       "step_order": 2,
       "executor_type": "Role",
-      "executor_value": "Accounts Manager"
+      "executor_value": "Accounts Manager",
+      "form_schema": "[{\"key\": \"so_hoa_don\", \"label\": \"Số hóa đơn\", \"type\": \"text\", \"required\": true}, {\"key\": \"nha_cung_cap\", \"label\": \"Nhà cung cấp\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_tien\", \"label\": \"Tổng tiền hóa đơn (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thue_vat\", \"label\": \"Thuế VAT (VNĐ)\", \"type\": \"number\", \"required\": false}, {\"key\": \"ngay_hoa_don\", \"label\": \"Ngày hóa đơn\", \"type\": \"date\", \"required\": true}, {\"key\": \"loai_hoa_don\", \"label\": \"Loại hóa đơn\", \"type\": \"select\", \"required\": true, \"options\": [\"Hóa đơn GTGT\", \"Hóa đơn bán hàng\", \"Phiếu xuất kho\"]}, {\"key\": \"hop_dong_lien_quan\", \"label\": \"Hợp đồng/PO liên quan\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "approve",
@@ -33,7 +34,8 @@
       "label": "Hạch toán vào sổ sách",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "Accounts Manager"
+      "executor_value": "Accounts Manager",
+      "form_schema": "[{\"key\": \"tai_khoan_no\", \"label\": \"Tài khoản nợ\", \"type\": \"text\", \"required\": true}, {\"key\": \"tai_khoan_co\", \"label\": \"Tài khoản có\", \"type\": \"text\", \"required\": true}, {\"key\": \"ghi_chu_hach_toan\", \"label\": \"Ghi chú hạch toán\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

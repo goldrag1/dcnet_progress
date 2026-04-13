@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Mô tả yêu cầu",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"tieu_de\", \"label\": \"Tiêu đề công việc\", \"type\": \"text\", \"required\": true}, {\"key\": \"mo_ta\", \"label\": \"Mô tả chi tiết\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"thoi_han\", \"label\": \"Thời hạn hoàn thành\", \"type\": \"date\", \"required\": false}, {\"key\": \"muc_do\", \"label\": \"Mức độ ưu tiên\", \"type\": \"select\", \"required\": false, \"options\": [\"Thấp\", \"Trung bình\", \"Cao\", \"Khẩn cấp\"]}]"
     },
     {
       "step_id": "approve",

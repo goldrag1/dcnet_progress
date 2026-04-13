@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Mô tả thay đổi và rủi ro",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"mo_ta_thay_doi\", \"label\": \"Mô tả thay đổi\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"he_thong\", \"label\": \"Hệ thống bị ảnh hưởng\", \"type\": \"select\", \"required\": true, \"options\": [\"Mạng nội bộ\", \"Hệ thống email\", \"ERP\", \"Website\", \"Datacenter\", \"Hạ tầng mạng\", \"Khác\"]}, {\"key\": \"thoi_gian_du_kien\", \"label\": \"Thời gian thực hiện dự kiến\", \"type\": \"text\", \"required\": true}, {\"key\": \"rui_ro\", \"label\": \"Đánh giá rủi ro\", \"type\": \"select\", \"required\": true, \"options\": [\"Thấp\", \"Trung bình\", \"Cao\"]}, {\"key\": \"ke_hoach_rollback\", \"label\": \"Kế hoạch rollback\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"thoi_gian_downtime\", \"label\": \"Thời gian downtime dự kiến (phút)\", \"type\": \"number\", \"required\": false}]"
     },
     {
       "step_id": "review",
@@ -32,14 +33,16 @@
       "label": "Thực hiện thay đổi",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"ngay_thuc_hien\", \"label\": \"Ngày thực hiện\", \"type\": \"date\", \"required\": true}, {\"key\": \"ket_qua\", \"label\": \"Kết quả thực hiện\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"su_co_phat_sinh\", \"label\": \"Sự cố phát sinh (nếu có)\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "verify",
       "step_type": "Task",
       "label": "Kiểm tra sau thay đổi",
       "step_order": 5,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ket_qua_kiem_tra\", \"label\": \"Kết quả kiểm tra\", \"type\": \"select\", \"required\": true, \"options\": [\"Đạt yêu cầu\", \"Cần điều chỉnh\", \"Không đạt\"]}, {\"key\": \"ghi_chu_kiem_tra\", \"label\": \"Ghi chú kiểm tra\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

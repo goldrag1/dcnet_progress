@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Đề xuất đào tạo",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ten_khoa\", \"label\": \"Tên khóa đào tạo\", \"type\": \"text\", \"required\": true}, {\"key\": \"don_vi_dao_tao\", \"label\": \"Đơn vị đào tạo\", \"type\": \"text\", \"required\": true}, {\"key\": \"chi_phi\", \"label\": \"Chi phí dự kiến (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_gian\", \"label\": \"Thời gian đào tạo\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_nguoi\", \"label\": \"Số người tham gia\", \"type\": \"number\", \"required\": true}, {\"key\": \"muc_tieu\", \"label\": \"Mục tiêu đào tạo\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"hinh_thuc\", \"label\": \"Hình thức\", \"type\": \"select\", \"required\": true, \"options\": [\"Trực tiếp\", \"Trực tuyến\", \"Kết hợp\"]}]"
     },
     {
       "step_id": "approve",

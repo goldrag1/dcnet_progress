@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Đăng ký thông tin",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"chu_de\", \"label\": \"Chủ đề cuộc họp\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngay_hop\", \"label\": \"Ngày họp\", \"type\": \"date\", \"required\": true}, {\"key\": \"gio_bat_dau\", \"label\": \"Giờ bắt đầu\", \"type\": \"text\", \"required\": true}, {\"key\": \"gio_ket_thuc\", \"label\": \"Giờ kết thúc\", \"type\": \"text\", \"required\": true}, {\"key\": \"phong_hop\", \"label\": \"Phòng họp\", \"type\": \"select\", \"required\": true, \"options\": [\"Phòng họp 1 (10 người)\", \"Phòng họp 2 (20 người)\", \"Phòng họp lớn (50 người)\", \"Phòng họp online\"]}, {\"key\": \"so_nguoi\", \"label\": \"Số người tham dự\", \"type\": \"number\", \"required\": true}, {\"key\": \"thiet_bi_can\", \"label\": \"Thiết bị cần chuẩn bị\", \"type\": \"select\", \"required\": false, \"options\": [\"Máy chiếu\", \"Micro\", \"Camera hội nghị\", \"Không cần\"]}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú thêm\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "confirm",
@@ -23,7 +24,8 @@
       "label": "Hành chính xác nhận",
       "step_order": 3,
       "executor_type": "Role",
-      "executor_value": "HR Manager"
+      "executor_value": "HR Manager",
+      "form_schema": "[{\"key\": \"trang_thai_phong\", \"label\": \"Trạng thái phòng\", \"type\": \"select\", \"required\": true, \"options\": [\"Đã xác nhận\", \"Đổi phòng\", \"Không có phòng trống\"]}, {\"key\": \"phong_thuc_te\", \"label\": \"Phòng họp thực tế\", \"type\": \"text\", \"required\": false}, {\"key\": \"ghi_chu_xac_nhan\", \"label\": \"Ghi chú xác nhận\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

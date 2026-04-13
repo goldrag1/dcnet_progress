@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Đề xuất cấp phát",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"loai_thiet_bi\", \"label\": \"Loại thiết bị\", \"type\": \"select\", \"required\": true, \"options\": [\"Laptop\", \"Máy tính bàn\", \"Màn hình\", \"Bàn phím/Chuột\", \"Tai nghe\", \"Điện thoại\", \"Khác\"]}, {\"key\": \"cau_hinh\", \"label\": \"Cấu hình yêu cầu\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"ly_do\", \"label\": \"Lý do đề nghị\", \"type\": \"select\", \"required\": true, \"options\": [\"Nhân viên mới\", \"Thay thế hỏng\", \"Nâng cấp\", \"Dự án mới\"]}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú thêm\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "dept_approve",
@@ -30,14 +31,16 @@
       "label": "IT chuẩn bị thiết bị",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"thiet_bi_cap\", \"label\": \"Thiết bị cấp phát\", \"type\": \"text\", \"required\": true}, {\"key\": \"serial_number\", \"label\": \"Số serial\", \"type\": \"text\", \"required\": true}, {\"key\": \"cau_hinh_thuc_te\", \"label\": \"Cấu hình thực tế\", \"type\": \"textarea\", \"required\": false}, {\"key\": \"phan_mem_cai_dat\", \"label\": \"Phần mềm đã cài đặt\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "handover",
       "step_type": "Task",
       "label": "Bàn giao và ký nhận",
       "step_order": 5,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ngay_nhan\", \"label\": \"Ngày nhận thiết bị\", \"type\": \"date\", \"required\": true}, {\"key\": \"tinh_trang\", \"label\": \"Tình trạng thiết bị\", \"type\": \"select\", \"required\": true, \"options\": [\"Mới 100%\", \"Đã qua sử dụng - tốt\", \"Đã qua sử dụng - trung bình\"]}, {\"key\": \"xac_nhan_nhan\", \"label\": \"Xác nhận đã nhận đủ\", \"type\": \"checkbox\", \"required\": true}]"
     },
     {
       "step_id": "end",

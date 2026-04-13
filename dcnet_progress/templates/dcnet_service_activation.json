@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Kiểm tra đơn hàng",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ma_khach_hang\", \"label\": \"Mã khách hàng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ten_dich_vu\", \"label\": \"Tên dịch vụ\", \"type\": \"select\", \"required\": true, \"options\": [\"Internet FTTH\", \"Internet Leased Line\", \"Colocation\", \"Cloud Server\", \"VPN\", \"Hosting\"]}, {\"key\": \"goi_cuoc\", \"label\": \"Gói cước\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_hop_dong\", \"label\": \"Số hợp đồng\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngay_bat_dau\", \"label\": \"Ngày bắt đầu dịch vụ\", \"type\": \"date\", \"required\": true}, {\"key\": \"dia_chi\", \"label\": \"Địa chỉ lắp đặt/Vị trí rack\", \"type\": \"textarea\", \"required\": true}]"
     },
     {
       "step_id": "site_survey",
@@ -23,7 +24,8 @@
       "label": "Khảo sát thực địa",
       "step_order": 3,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"ket_qua_khao_sat\", \"label\": \"Kết quả khảo sát\", \"type\": \"select\", \"required\": true, \"options\": [\"Đạt yêu cầu\", \"Cần bổ sung hạ tầng\", \"Không khả thi\"]}, {\"key\": \"ghi_chu_khao_sat\", \"label\": \"Ghi chú khảo sát\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"vat_tu_can\", \"label\": \"Vật tư cần chuẩn bị\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "install",
@@ -31,7 +33,8 @@
       "label": "Lắp đặt thiết bị",
       "step_order": 4,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"thiet_bi_lap_dat\", \"label\": \"Thiết bị đã lắp đặt\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"ngay_lap_dat\", \"label\": \"Ngày lắp đặt\", \"type\": \"date\", \"required\": true}, {\"key\": \"ip_address\", \"label\": \"Địa chỉ IP cấp phát\", \"type\": \"text\", \"required\": false}, {\"key\": \"cau_hinh_mang\", \"label\": \"Cấu hình mạng\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "test",
@@ -39,7 +42,8 @@
       "label": "Kiểm tra kết nối",
       "step_order": 5,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"toc_do_download\", \"label\": \"Tốc độ Download (Mbps)\", \"type\": \"number\", \"required\": true}, {\"key\": \"toc_do_upload\", \"label\": \"Tốc độ Upload (Mbps)\", \"type\": \"number\", \"required\": true}, {\"key\": \"ping\", \"label\": \"Ping (ms)\", \"type\": \"number\", \"required\": false}, {\"key\": \"ket_qua_test\", \"label\": \"Kết quả kiểm tra\", \"type\": \"select\", \"required\": true, \"options\": [\"Đạt\", \"Không đạt - cần điều chỉnh\"]}]"
     },
     {
       "step_id": "customer_accept",

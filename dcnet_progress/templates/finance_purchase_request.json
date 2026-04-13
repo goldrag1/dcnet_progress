@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Lập đề nghị mua hàng",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ten_hang\", \"label\": \"Tên hàng hóa/dịch vụ\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_luong\", \"label\": \"Số lượng\", \"type\": \"number\", \"required\": true}, {\"key\": \"don_vi\", \"label\": \"Đơn vị tính\", \"type\": \"select\", \"required\": true, \"options\": [\"Cái\", \"Bộ\", \"Chiếc\", \"Hộp\", \"Thùng\", \"Mét\", \"Kg\", \"Khác\"]}, {\"key\": \"don_gia\", \"label\": \"Đơn giá dự kiến (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"ly_do\", \"label\": \"Lý do mua hàng\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"muc_do\", \"label\": \"Mức độ ưu tiên\", \"type\": \"select\", \"required\": true, \"options\": [\"Thường\", \"Gấp\", \"Khẩn cấp\"]}, {\"key\": \"ngay_can\", \"label\": \"Ngày cần hàng\", \"type\": \"date\", \"required\": false}]"
     },
     {
       "step_id": "dept_approve",
@@ -39,7 +40,8 @@
       "label": "Mua hàng",
       "step_order": 5,
       "executor_type": "Role",
-      "executor_value": "Purchase Manager"
+      "executor_value": "Purchase Manager",
+      "form_schema": "[{\"key\": \"nha_cung_cap\", \"label\": \"Nhà cung cấp\", \"type\": \"text\", \"required\": true}, {\"key\": \"gia_thuc_te\", \"label\": \"Giá thực tế (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"ngay_giao\", \"label\": \"Ngày giao hàng dự kiến\", \"type\": \"date\", \"required\": true}, {\"key\": \"so_hop_dong\", \"label\": \"Số hợp đồng/PO\", \"type\": \"text\", \"required\": false}, {\"key\": \"ghi_chu\", \"label\": \"Ghi chú mua hàng\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

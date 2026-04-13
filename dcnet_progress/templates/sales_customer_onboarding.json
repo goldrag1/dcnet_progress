@@ -15,21 +15,24 @@
       "step_type": "Task",
       "label": "Thu thập thông tin khách",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ten_khach_hang\", \"label\": \"Tên khách hàng/Công ty\", \"type\": \"text\", \"required\": true}, {\"key\": \"ma_so_thue\", \"label\": \"Mã số thuế\", \"type\": \"text\", \"required\": false}, {\"key\": \"loai_dich_vu\", \"label\": \"Loại dịch vụ\", \"type\": \"select\", \"required\": true, \"options\": [\"Internet FTTH\", \"Internet Leased Line\", \"Colocation\", \"Cloud Server\", \"VPN\", \"Khác\"]}, {\"key\": \"goi_cuoc\", \"label\": \"Gói cước\", \"type\": \"text\", \"required\": true}, {\"key\": \"dia_chi_lap_dat\", \"label\": \"Địa chỉ lắp đặt\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"nguoi_lien_he\", \"label\": \"Người liên hệ\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_dien_thoai\", \"label\": \"Số điện thoại\", \"type\": \"text\", \"required\": true}, {\"key\": \"email\", \"label\": \"Email\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "prepare_contract",
       "step_type": "Task",
       "label": "Chuẩn bị hợp đồng",
       "step_order": 3,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"so_hop_dong\", \"label\": \"Số hợp đồng\", \"type\": \"text\", \"required\": true}, {\"key\": \"gia_tri_hop_dong\", \"label\": \"Giá trị hợp đồng/tháng (VNĐ)\", \"type\": \"number\", \"required\": true}, {\"key\": \"thoi_han\", \"label\": \"Thời hạn hợp đồng (tháng)\", \"type\": \"number\", \"required\": true}]"
     },
     {
       "step_id": "sign_contract",
       "step_type": "Task",
       "label": "Ký hợp đồng",
       "step_order": 4,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ngay_ky\", \"label\": \"Ngày ký hợp đồng\", \"type\": \"date\", \"required\": true}, {\"key\": \"da_ky\", \"label\": \"Đã ký hợp đồng\", \"type\": \"checkbox\", \"required\": true}]"
     },
     {
       "step_id": "activate",
@@ -37,14 +40,16 @@
       "label": "Kích hoạt dịch vụ",
       "step_order": 5,
       "executor_type": "Role",
-      "executor_value": "System Manager"
+      "executor_value": "System Manager",
+      "form_schema": "[{\"key\": \"ma_khach_hang\", \"label\": \"Mã khách hàng hệ thống\", \"type\": \"text\", \"required\": true}, {\"key\": \"ip_address\", \"label\": \"Địa chỉ IP cấp phát\", \"type\": \"text\", \"required\": false}, {\"key\": \"ngay_kich_hoat\", \"label\": \"Ngày kích hoạt\", \"type\": \"date\", \"required\": true}, {\"key\": \"toc_do\", \"label\": \"Tốc độ thực tế (Mbps)\", \"type\": \"number\", \"required\": false}]"
     },
     {
       "step_id": "handover",
       "step_type": "Task",
       "label": "Bàn giao cho hỗ trợ",
       "step_order": 6,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"nguoi_ho_tro\", \"label\": \"Nhân viên hỗ trợ phụ trách\", \"type\": \"text\", \"required\": true}, {\"key\": \"ghi_chu_ban_giao\", \"label\": \"Ghi chú bàn giao\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "end",

@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Soạn thảo văn bản",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"tieu_de\", \"label\": \"Tiêu đề văn bản\", \"type\": \"text\", \"required\": true}, {\"key\": \"loai_van_ban\", \"label\": \"Loại văn bản\", \"type\": \"select\", \"required\": true, \"options\": [\"Quyết định\", \"Thông báo\", \"Công văn\", \"Nội quy\", \"Quy chế\", \"Biên bản\", \"Khác\"]}, {\"key\": \"noi_dung_tom_tat\", \"label\": \"Nội dung tóm tắt\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"muc_do_mat\", \"label\": \"Mức độ bảo mật\", \"type\": \"select\", \"required\": true, \"options\": [\"Công khai\", \"Nội bộ\", \"Mật\"]}, {\"key\": \"phong_ban_lien_quan\", \"label\": \"Phòng ban liên quan\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "review",
@@ -23,7 +24,8 @@
       "label": "Trưởng phòng xem xét",
       "step_order": 3,
       "executor_type": "Direct Manager",
-      "allow_return": 1
+      "allow_return": 1,
+      "form_schema": "[{\"key\": \"y_kien_xem_xet\", \"label\": \"Ý kiến xem xét\", \"type\": \"textarea\", \"required\": false}, {\"key\": \"can_chinh_sua\", \"label\": \"Cần chỉnh sửa\", \"type\": \"checkbox\", \"required\": false}]"
     },
     {
       "step_id": "sign",
@@ -38,7 +40,8 @@
       "step_type": "Task",
       "label": "Phát hành và lưu trữ",
       "step_order": 5,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"so_van_ban\", \"label\": \"Số văn bản\", \"type\": \"text\", \"required\": true}, {\"key\": \"ngay_ban_hanh\", \"label\": \"Ngày ban hành\", \"type\": \"date\", \"required\": true}, {\"key\": \"noi_nhan\", \"label\": \"Nơi nhận\", \"type\": \"textarea\", \"required\": true}]"
     },
     {
       "step_id": "end",

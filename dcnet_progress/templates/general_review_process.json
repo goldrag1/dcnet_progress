@@ -15,21 +15,24 @@
       "step_type": "Task",
       "label": "Tự đánh giá",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ten_tai_lieu\", \"label\": \"Tên tài liệu\", \"type\": \"text\", \"required\": true}, {\"key\": \"loai_tai_lieu\", \"label\": \"Loại tài liệu\", \"type\": \"select\", \"required\": true, \"options\": [\"Báo cáo\", \"Đề xuất\", \"Kế hoạch\", \"Quy trình\", \"Tài liệu kỹ thuật\", \"Khác\"]}, {\"key\": \"mo_ta_noi_dung\", \"label\": \"Mô tả nội dung\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"phien_ban\", \"label\": \"Phiên bản\", \"type\": \"text\", \"required\": false}]"
     },
     {
       "step_id": "manager_review",
       "step_type": "Task",
       "label": "Quản lý đánh giá",
       "step_order": 3,
-      "executor_type": "Direct Manager"
+      "executor_type": "Direct Manager",
+      "form_schema": "[{\"key\": \"danh_gia\", \"label\": \"Đánh giá nội dung\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"diem_so\", \"label\": \"Điểm đánh giá (1-10)\", \"type\": \"number\", \"required\": false}, {\"key\": \"gop_y\", \"label\": \"Góp ý cải thiện\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "discussion",
       "step_type": "Task",
       "label": "Thảo luận kết quả",
       "step_order": 4,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ket_luan\", \"label\": \"Kết luận thảo luận\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"hanh_dong_tiep_theo\", \"label\": \"Hành động tiếp theo\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "finalize",

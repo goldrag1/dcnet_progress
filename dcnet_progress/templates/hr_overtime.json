@@ -15,7 +15,8 @@
       "step_type": "Task",
       "label": "Đăng ký làm thêm",
       "step_order": 2,
-      "executor_type": "Initiator"
+      "executor_type": "Initiator",
+      "form_schema": "[{\"key\": \"ngay_lam_them\", \"label\": \"Ngày làm thêm\", \"type\": \"date\", \"required\": true}, {\"key\": \"tu_gio\", \"label\": \"Từ giờ\", \"type\": \"text\", \"required\": true}, {\"key\": \"den_gio\", \"label\": \"Đến giờ\", \"type\": \"text\", \"required\": true}, {\"key\": \"so_gio\", \"label\": \"Tổng số giờ\", \"type\": \"number\", \"required\": true}, {\"key\": \"ly_do\", \"label\": \"Lý do làm thêm giờ\", \"type\": \"textarea\", \"required\": true}, {\"key\": \"cong_viec\", \"label\": \"Công việc cụ thể\", \"type\": \"textarea\", \"required\": false}]"
     },
     {
       "step_id": "approve",
