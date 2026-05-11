@@ -1,8 +1,8 @@
 from . import __version__ as app_version
 
 app_name = "dcnet_progress"
-app_title = "DCNet Progress"
-app_publisher = "DCNet"
+app_title = "DCNET Progress"
+app_publisher = "DCNET"
 app_description = "Business Process Management for ERPNext"
 app_email = "admin@dcnet.vn"
 app_license = "MIT"
